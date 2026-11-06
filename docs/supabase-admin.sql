@@ -1,6 +1,6 @@
 -- Rastreamento e painel admin do site da Cris Reis
 -- Rodar no SQL Editor do Supabase. Depois: criar o usuário da Cris em Authentication > Users
--- e trocar 'EMAIL_DA_CRIS@exemplo.com' pelo e-mail dela (e o do Judson) na tabela admins.
+-- Admins: cristiainy1@gmail.com e dinizjudson@gmail.com (criar os dois usuários em Authentication > Users).
 
 create table if not exists public.events (
   id text primary key,
@@ -37,7 +37,7 @@ create table if not exists public.lead_meta (
 );
 
 create table if not exists public.admins (email text primary key);
-insert into public.admins (email) values ('EMAIL_DA_CRIS@exemplo.com') on conflict do nothing;
+insert into public.admins (email) values ('cristiainy1@gmail.com'), ('dinizjudson@gmail.com') on conflict do nothing;
 
 alter table public.events enable row level security;
 alter table public.leads enable row level security;
@@ -55,3 +55,12 @@ create policy "admin lê eventos" on public.events for select to authenticated u
 create policy "site insere leads" on public.leads for insert to anon, authenticated with check (true);
 create policy "admin lê leads" on public.leads for select to authenticated using (public.is_admin());
 create policy "admin gerencia anotações" on public.lead_meta for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+-- Privilégios da Data API (necessários quando as tabelas novas não são expostas automaticamente)
+grant usage on schema public to anon, authenticated;
+grant insert on public.events to anon, authenticated;
+grant insert on public.leads to anon, authenticated;
+grant select on public.events to authenticated;
+grant select on public.leads to authenticated;
+grant select, insert, update, delete on public.lead_meta to authenticated;
+grant execute on function public.is_admin() to authenticated;

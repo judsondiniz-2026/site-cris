@@ -857,7 +857,7 @@ body.v-svc .m-progress { display: block; }
    Local: guarda no navegador. Remoto: envia ao Supabase quando SUPA estiver preenchido. */
 (function () {
   "use strict";
-  var SUPA = { url: "", key: "" }; // preencher depois: https://xxxx.supabase.co e a chave anon (publishable)
+  var SUPA = { url: "https://msetmhmukoaccgddcige.supabase.co", key: "sb_publishable_aHh6Di9o_cW53P0gdLZe2g_XWMYYXj5" }; // preencher depois: https://xxxx.supabase.co e a chave anon (publishable)
   var EV_KEY = "cris_ev_v1", MAX_EV = 6000;
   function rd(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
   function wr(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
@@ -894,7 +894,7 @@ body.v-svc .m-progress { display: block; }
     if (!SUPA.url || !SUPA.key) return;
     try {
       fetch(SUPA.url + "/rest/v1/" + path, { method: "POST", keepalive: true,
-        headers: { "apikey": SUPA.key, "Authorization": "Bearer " + SUPA.key, "Content-Type": "application/json", "Prefer": "return=minimal" },
+        headers: { "apikey": SUPA.key, "Content-Type": "application/json", "Prefer": "return=minimal" },
         body: JSON.stringify(rows) }).catch(function () {});
     } catch (e) {}
   }
