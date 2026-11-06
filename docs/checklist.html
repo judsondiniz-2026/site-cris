@@ -1,0 +1,831 @@
+<title>Checklist do Site da Cris</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600&family=Cormorant+Garamond:wght@500;600;700&display=swap">
+<style>
+/* Layout: página de trabalho de coluna única. Barra de progresso fixa, duas abas (A fazer e Prontas), tarefas principais com subtarefas marcáveis.
+   Uma tarefa só vai para Prontas quando for marcada como concluída. */
+:root {
+  color-scheme: light;
+  --bg: #f6f2ec;
+  --surface: #ffffff;
+  --fg: #2f2822;
+  --muted: #6b655f;
+  --line: #e6dfd3;
+  --line-strong: #8e8881;
+  --accent: #4b4037;
+  --accent-fg: #ffffff;
+  --done: #2f6b4a;
+  --done-bg: #e3efe7;
+  --who-cris: #7a4a14;
+  --who-cris-bg: #f3e6d0;
+  --who-voce: #2c4a7a;
+  --who-voce-bg: #dfe7f3;
+  --who-claude: #5b3a7a;
+  --who-claude-bg: #eadff3;
+  --warn: #8a4a12;
+  --font-title: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Albert Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #2f2822; --surface: #3d352e; --fg: #f6f2ec; --muted: #cfc6b8; --line: #5a4e44; --line-strong: #b8b0a7;
+    --accent: #e6dfd3; --accent-fg: #2f2822; --done: #a9d8bd; --done-bg: #2c3a32;
+    --who-cris: #e6c38a; --who-cris-bg: #4a3a24; --who-voce: #a9c4ee; --who-voce-bg: #26344d; --who-claude: #d3b7ee; --who-claude-bg: #3a2b4a;
+    --warn: #e8b27a;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #2f2822; --surface: #3d352e; --fg: #f6f2ec; --muted: #cfc6b8; --line: #5a4e44; --line-strong: #b8b0a7;
+  --accent: #e6dfd3; --accent-fg: #2f2822; --done: #a9d8bd; --done-bg: #2c3a32;
+  --who-cris: #e6c38a; --who-cris-bg: #4a3a24; --who-voce: #a9c4ee; --who-voce-bg: #26344d; --who-claude: #d3b7ee; --who-claude-bg: #3a2b4a;
+  --warn: #e8b27a;
+}
+
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-weight: 400; font-size: 15px; line-height: 1.6;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 30; }
+a { color: inherit; }
+h1, h2, h3, p, ul { margin: 0; }
+ul { padding: 0; list-style: none; }
+button { font-family: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.wrap {
+  max-width: 860px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Barra fixa */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topbar .wrap { display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; align-items: center; padding-block: 10px; }
+.topbar .name { font-family: var(--font-title); font-weight: 700; font-size: 18px; line-height: 1; }
+.topbar .count { font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.track { grid-column: 1 / -1; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.fill { height: 100%; width: 0; background: var(--done); border-radius: 3px; transition: width .35s ease; }
+
+/* Cabeçalho */
+.head { padding-block: 40px 8px; }
+.head h1 { font-family: var(--font-title); font-weight: 600; letter-spacing: -0.02em; line-height: 1; font-size: clamp(40px, 8vw, 62px); text-wrap: balance; }
+.head .lead { margin-top: 16px; max-width: 58ch; color: var(--muted); font-size: 16px; }
+.savestate { margin-top: 14px; font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.savestate::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.savestate[data-kind="ok"]::before { background: var(--done); }
+.savestate[data-kind="saving"]::before { background: var(--accent); }
+.savestate[data-kind="err"], .savestate[data-kind="local"] { color: var(--warn); }
+.savestate[data-kind="err"]::before, .savestate[data-kind="local"]::before { background: var(--warn); }
+
+/* Blocos recolhíveis do cabeçalho */
+.box { margin-top: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.box > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; min-height: 52px; font-weight: 600; }
+.box > summary::-webkit-details-marker { display: none; }
+.box > summary::after { content: "+"; font-size: 22px; line-height: 1; color: var(--accent); font-weight: 300; }
+.box[open] > summary::after { content: "\2212"; }
+.box-body { padding: 4px 18px 20px; display: grid; gap: 18px; }
+.cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.col { min-width: 0; }
+.col h3 { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; color: var(--muted); margin-bottom: 10px; }
+.col li, .ask li { position: relative; padding-left: 16px; margin-bottom: 8px; font-size: 14px; line-height: 1.5; }
+.col li::before, .ask li::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+.how { border-top: 1px solid var(--line); padding-top: 16px; font-size: 14px; color: var(--muted); }
+.how b { color: var(--fg); font-weight: 600; }
+.how a { color: var(--fg); text-underline-offset: 3px; }
+.ask { display: grid; gap: 2px; }
+.ask-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.btn { min-height: 44px; padding: 8px 20px; border-radius: 999px; border: 1px solid transparent; background: var(--accent); color: var(--accent-fg); font-size: 13px; font-weight: 600; cursor: pointer; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.ghost { background: transparent; color: var(--fg); border-color: var(--line-strong); }
+.note { font-size: 13px; color: var(--muted); }
+
+/* Abas */
+.tabs { margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; }
+.tab { min-height: 48px; border: 0; border-radius: 999px; background: transparent; font-size: 14px; font-weight: 600; cursor: pointer; font-variant-numeric: tabular-nums; }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-fg); }
+
+/* Filtros */
+.filters { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip {
+  min-height: 40px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface);
+  font-size: 13px; font-weight: 500; cursor: pointer; font-variant-numeric: tabular-nums;
+}
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.filters .sp { flex: 1 1 8px; }
+.toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; font-size: 13px; font-weight: 500; cursor: pointer; }
+.toggle input { width: 18px; height: 18px; accent-color: var(--accent); }
+.jump { margin-top: 12px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+.jump button { flex: none; min-height: 36px; padding: 4px 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; font-size: 12px; cursor: pointer; white-space: nowrap; }
+.jump button:hover { background: var(--surface); }
+
+/* Áreas e tarefas */
+.list { margin-top: 8px; padding-bottom: 72px; }
+.area { margin-top: 32px; display: grid; gap: 12px; scroll-margin-top: 80px; }
+.area > h2 { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; font-weight: 600; color: var(--muted); }
+.grp { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; scroll-margin-top: 80px; }
+.grp > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; padding: 16px 18px; min-height: 60px; }
+.grp > summary::-webkit-details-marker { display: none; }
+.grp .st { font-family: var(--font-title); font-weight: 700; font-size: 22px; line-height: 1.1; letter-spacing: -0.005em; }
+.grp .sc { font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+.grp.ready .sc, .grp.closed .sc { color: var(--done); }
+.grp .sintro { grid-column: 1 / -1; font-size: 13.5px; color: var(--muted); max-width: 64ch; }
+.grp .strack { grid-column: 1 / -1; height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; margin-top: 4px; }
+.grp .sfill { display: block; height: 100%; width: 0; background: var(--done); transition: width .35s ease; }
+.items { border-top: 1px solid var(--line); }
+.row {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 14px; align-items: start;
+  padding: 13px 18px; border-top: 1px solid var(--line); cursor: pointer;
+}
+.items .row:first-child { border-top: 0; }
+.row:hover { background: color-mix(in srgb, var(--fg) 3%, transparent); }
+.row input {
+  appearance: none; -webkit-appearance: none; width: 22px; height: 22px; margin: 1px 0 0; border: 1.5px solid var(--line-strong);
+  border-radius: 50%; background: var(--bg); cursor: pointer; display: grid; place-content: center; flex: none;
+}
+.row input:checked { background: var(--done); border-color: var(--done); }
+.row input:checked::after { content: ""; width: 6px; height: 11px; border: solid var(--surface); border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -1px); }
+.row input:disabled { cursor: default; opacity: .7; }
+.row .t { display: block; font-weight: 500; line-height: 1.45; overflow-wrap: anywhere; }
+.row .d { display: block; margin-top: 3px; font-size: 13.5px; font-weight: 300; color: var(--muted); line-height: 1.5; overflow-wrap: anywhere; }
+.row.is-done .t { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.row.is-done .d { display: none; }
+.who { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; white-space: nowrap; margin-top: 1px; }
+.who-cris { color: var(--who-cris); background: var(--who-cris-bg); }
+.who-voce { color: var(--who-voce); background: var(--who-voce-bg); }
+.who-claude { color: var(--who-claude); background: var(--who-claude-bg); }
+.gfoot { border-top: 1px solid var(--line); padding: 14px 18px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.empty { padding: 40px 18px; text-align: center; color: var(--muted); }
+.moved { margin-top: 14px; font-size: 13px; color: var(--done); min-height: 20px; }
+
+footer { padding-block: 0 56px; font-size: 13px; color: var(--muted); }
+
+@media (max-width: 640px) {
+  .cols { grid-template-columns: minmax(0, 1fr); }
+  .row { grid-template-columns: auto minmax(0, 1fr); padding: 13px 14px; }
+  .row .who { grid-column: 2; justify-self: start; margin-top: 6px; }
+  .grp > summary { padding: 14px; }
+  .head { padding-top: 28px; }
+  .gfoot { padding: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fill, .sfill { transition: none; }
+}
+</style>
+
+<div class="topbar">
+  <div class="wrap">
+    <span class="name">Site da Cris</span>
+    <span class="count" id="top-count">0 de 0</span>
+    <div class="track" role="progressbar" aria-label="Progresso geral" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="top-track"><div class="fill" id="top-fill"></div></div>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="head">
+    <h1>Checklist do site da Cris</h1>
+    <p class="lead">Cada tarefa principal reúne as suas subtarefas. Quando todas estiverem marcadas, dá para concluir a tarefa, e só então ela vai para a aba Prontas. As marcações ficam salvas.</p>
+    <p class="savestate" id="savestate" data-kind="idle" role="status">Conectando…</p>
+
+    <details class="box" open>
+      <summary>Onde paramos, em 03/11/2026</summary>
+      <div class="box-body">
+        <div class="cols">
+          <div class="col">
+            <h3>Avançou hoje</h3>
+            <ul>
+              <li>Paleta final aplicada: taupe, areia, café e branco, sem dourado</li>
+              <li>Design system com dois temas e os componentes</li>
+              <li>Logo vetorizado e fotos da Cris no topo e na seção sobre</li>
+              <li>Seção de depoimentos retirada da home</li>
+              <li>Console sem erros, sem travessão e sem preços</li>
+            </ul>
+          </div>
+          <div class="col">
+            <h3>Existe, mas é exemplo</h3>
+            <ul>
+              <li>Perguntas frequentes e etapas da mentoria</li>
+              <li>Regras de recomendação do chat</li>
+              <li>Termos de uso e política de privacidade</li>
+            </ul>
+          </div>
+          <div class="col">
+            <h3>Ainda não existe</h3>
+            <ul>
+              <li>Texto da página da Mentoria Singular</li>
+              <li>Banco de dados: os contatos ficam só no navegador de quem preenche</li>
+              <li>Painel admin, endereços reais e hospedagem</li>
+            </ul>
+          </div>
+        </div>
+        <p class="how"><b>Como retomar:</b> abra uma conversa nova, cole o link deste checklist e peça para continuar. A página atual do site está <a href="https://claude.ai/artifact/JN4zbTuQoU4SG9vMmwNSEn" target="_blank" rel="noopener">neste link</a> e o design system <a href="https://claude.ai/artifact/M1sg3P2xPiS6duygixZpkJ" target="_blank" rel="noopener">neste</a>.</p>
+      </div>
+    </details>
+
+    <details class="box" id="ask-box">
+      <summary id="ask-sum">Pedidos à Cris</summary>
+      <div class="box-body">
+        <p class="note">Montada a partir das subtarefas da Cris que ainda não estão marcadas. Os depoimentos ficam fora, para depois da entrega.</p>
+        <ul class="ask" id="ask-list"></ul>
+        <div class="ask-actions"><button class="btn" type="button" id="ask-copy">Copiar a lista</button><span class="note" id="ask-msg" role="status"></span></div>
+      </div>
+    </details>
+
+    <div class="tabs" id="tabs" role="tablist" aria-label="Tarefas"></div>
+    <div class="filters" id="filters" role="group" aria-label="Filtrar por responsável"></div>
+    <div class="jump" id="jump" aria-label="Ir para a área"></div>
+    <p class="moved" id="moved" role="status"></p>
+  </header>
+
+  <div class="list" id="list"></div>
+
+  <footer>Checklist reorganizado em tarefas e subtarefas, em 03/11/2026, a partir da versão 5 do site.</footer>
+</main>
+<script>
+(function () {
+  "use strict";
+  /* ---------- Conteúdo: tarefa principal (grupo) > subtarefas [id, responsável, texto, detalhe, pronto?] ---------- */
+  var GROUPS = [
+    /* ===== Home ===== */
+    { id: "g-base", area: "Home", title: "Estrutura do site em uma página", items: [
+      ["n01", "claude", "Blocos do briefing montados em uma página única", "Topo, primeiro passo, Mentoria, etapas, Individual, Para a sua empresa, Esbelt ON, materiais e Cristiainy Reis.", 2],
+      ["n02", "claude", "Cards básicos que levam a uma página para cada serviço", "O texto longo mora na página do serviço, não na home.", 2],
+      ["n06", "claude", "Perguntas frequentes só dentro das páginas dos serviços", "", 2],
+      ["n07", "claude", "Sem preços e sem travessão nos textos", "", 2],
+      ["n03", "claude", "Seção de depoimentos retirada da home", "Entra depois da entrega. Ver a tarefa “Depoimentos reais”.", 2]
+    ] },
+    { id: "g-estrutura", area: "Home", title: "Home: ordem das seções", items: [
+      ["p01", "voce", "Aprovar a ordem das seções", "Topo, primeiro passo, Mentoria, etapas, Individual, Para a sua empresa, Esbelt ON, materiais, Cristiainy Reis e rodapé."],
+      ["p02", "claude", "Retirar as etiquetas “Exemplo”", "Há uma nas etapas da mentoria, uma nos materiais e uma em cada bloco de perguntas frequentes. Só saem quando entrar o conteúdo real."]
+    ] },
+    { id: "g-topo", area: "Home", title: "Home: topo e fotos da Cris", items: [
+      ["c01", "cris", "Fotos profissionais enviadas", "A Cris já mandou.", 2],
+      ["n04", "claude", "Colocar as fotos no topo e na seção Cristiainy Reis", "Retrato em close no topo e retrato sorrindo na seção sobre, os dois em moldura de arco.", 3],
+      ["c02", "cris", "Autorização para usar as fotos", "A Cris autorizou.", 3],
+      ["v05", "cris", "Aprovar a escolha e o enquadramento das fotos", "Moldura em arco com um anel de fio, sem filtro colorido. Há outras fotos enviadas, em cor, que podem entrar em outras seções."],
+      ["r07", "claude", "Texto alternativo das fotos", "", 3],
+      ["b01", "voce", "Ícone do Instagram no topo", "Abre instagram.com/cristiainy_mentora em nova aba."]
+    ] },
+    { id: "g-passo", area: "Home", title: "Home: Descubra seu primeiro passo", items: [
+      ["b02", "voce", "“Converse comigo” abre o chat guiado", "É o único botão de conversa da home."],
+      ["b18", "voce", "Nenhum WhatsApp solto na página", "Sem botão no topo, flutuante ou ao lado de outros botões. Só no fim das páginas, do chat e no rodapé."]
+    ] },
+    { id: "g-cards", area: "Home", title: "Home: cards dos serviços", items: [
+      ["b03", "voce", "Card da Mentoria Singular e o botão “Conhecer a mentoria”", "O card inteiro e o botão levam à página da mentoria."],
+      ["b04", "voce", "Card de Análise de Perfil Comportamental", "Leva à página própria."],
+      ["b05", "voce", "Os três cards de treinamento", "Comercial, Líderes e Comunicação Assertiva, cada um na sua página."],
+      ["b06", "voce", "Card de Palestras", "Leva à página própria."]
+    ] },
+    { id: "g-etapas", area: "Home", title: "Home: Seis meses, uma etapa por vez", items: [
+      ["et-nv", "claude", "Meses ajustados ao Notion e sem a etiqueta “Exemplo”", "A distribuição por mês é uma inferência a partir da ordem do Notion. A Cris confirma.", 5],
+      ["et-cr", "cris", "Confirmar a distribuição das fases por mês", ""],
+      ["c10", "cris", "Confirmar as etapas da mentoria mês a mês", "A seção é um exemplo montado a partir das frentes do briefing."],
+      ["n05", "claude", "Trocar o texto de exemplo pelas etapas confirmadas", "Depende da confirmação da Cris."]
+    ] },
+    { id: "g-esbelt", area: "Home", title: "Home: Esbelt ON", items: [
+      ["c12", "cris", "Link do licenciamento Esbelt ON e a marca real", "O botão “Quero ser licenciada” abre o WhatsApp até haver o link. O nome no card é texto, não a marca oficial."],
+      ["v08", "claude", "Usar a marca real da Esbelt ON no card", "Depende da marca e da autorização."],
+      ["b07", "voce", "“Quero ser licenciada” abre o link do licenciamento", "Hoje abre o WhatsApp."]
+    ] },
+    { id: "g-materiais", area: "Home", title: "Home: Materiais gratuitos", items: [
+      ["c11", "cris", "Calculadora de Valor pronta, com link ou arquivo", "E o texto de apresentação do material."],
+      ["b15", "claude", "“Abrir Calculadora de Valor” leva ao material real", "Hoje abre o WhatsApp."],
+      ["b08", "voce", "“Liberar acesso” abre o cadastro em formato de chat", ""]
+    ] },
+    { id: "g-sobre", area: "Home", title: "Home: Cristiainy Reis (sobre)", items: [
+      ["c17", "cris", "Conferir a lista de formações e títulos", "Em especial as pós-graduações marcadas como “em conclusão”."]
+    ] },
+    { id: "g-rodape", area: "Home", title: "Rodapé e contatos", items: [
+      ["c14", "cris", "Confirmar WhatsApp, Instagram e site", "+55 (14) 99855-2893, @cristiainy_mentora e www.crisreis.com."],
+      ["c15", "cris", "Definir quem responde os contatos, em quanto tempo e por qual número", "O site só encaminha. Alguém precisa atender o que chegar."],
+      ["b11", "voce", "Testar os links do rodapé", "Instagram, www.crisreis.com, WhatsApp, Termos de uso e Política de privacidade."],
+      ["b19", "voce", "Links externos abrem em nova aba", "Instagram, site e WhatsApp."]
+    ] },
+
+    /* ===== Páginas de serviço ===== */
+    { id: "g-mentoria", area: "Páginas de serviço", title: "Página: Mentoria Singular", items: [
+      ["c06", "cris", "Aprovar o texto da página", "Nova página montada a partir do Notion: hero, três etapas, quatro fases (ordem do Notion), para quem é e perguntas frequentes."],
+      ["p03", "claude", "Montar a página com o texto definido", "", 4],
+      ["pm-dur", "cris", "Confirmar 6 meses e o número de encontros", "A página diz 6 meses. O Notion fala em 8 encontros e o briefing em 12 sessões, por isso a página não cita o número. A seção “Processo” da home ainda fala em 12 sessões por mês."],
+      ["pm-faq", "cris", "Perguntas frequentes reais", "As de hoje são exemplo."],
+      ["pm-agenda", "cris", "Link da agenda para a sessão de diagnóstico", "Entra na constante AGENDA_URL. Enquanto estiver vazio, o formulário termina com um botão de WhatsApp."],
+      ["pm-mail", "voce", "Enviar as respostas do formulário por e-mail", "Destino informado: cristiany1@gmail.com (confirmar a grafia). O site hoje só guarda no navegador; o envio real precisa do backend (Supabase)."],
+      ["pm-form", "voce", "Revisar as perguntas do formulário da sessão de diagnóstico", "9 perguntas, sem endereço, idade nem renda. Decidir se faixa de faturamento entra como opcional."],
+      ["pm-btn", "voce", "Botão final abre o formulário da sessão de diagnóstico", "Testar o fluxo completo no celular."],
+      ["pm-cel", "voce", "Conferir no celular e no computador", ""]
+    ] },
+    { id: "g-analise", area: "Páginas de serviço", title: "Página: Análise de Perfil Comportamental", items: [
+      ["pa-txt", "cris", "Validar o texto criado a partir do briefing", "Página no novo formato, com lista de espera. Se for aprovada, não precisa mudar nada; se não, voltamos ao texto."],
+      ["pa-env", "claude", "Página no novo formato com lista de espera", "Capa com foto própria, itens em hover, para quem é, perguntas frequentes e lista de espera.", 5],
+      ["pa-faq", "cris", "Conferir as perguntas frequentes", "Escritas a partir do briefing. Acrescentar as que a Cris receber."],
+      ["pa-btn", "voce", "Testar a lista de espera e o botão fixo de WhatsApp", "A lista guarda no navegador por enquanto. O envio para a Cris depende do backend."],
+      ["pa-cel", "voce", "Conferir no celular e no computador", ""]
+    ] },
+    { id: "g-comercial", area: "Páginas de serviço", title: "Página: Treinamento Comercial GIRO, PULSO & PRAC", items: [
+      ["pc-txt", "cris", "Validar o texto criado a partir do briefing", "Página no novo formato, com lista de espera. Se for aprovada, não precisa mudar nada; se não, voltamos ao texto."],
+      ["pc-env", "claude", "Página no novo formato com lista de espera", "Capa com foto própria, itens em hover, para quem é, perguntas frequentes e lista de espera.", 5],
+      ["pc-faq", "cris", "Conferir as perguntas frequentes", "Escritas a partir do briefing. Acrescentar as que a Cris receber."],
+      ["pc-btn", "voce", "Testar a lista de espera e o botão fixo de WhatsApp", "A lista guarda no navegador por enquanto. O envio para a Cris depende do backend."],
+      ["pc-cel", "voce", "Conferir no celular e no computador", ""]
+    ] },
+    { id: "g-lideres", area: "Páginas de serviço", title: "Página: Treinamento de Líderes", items: [
+      ["pl-txt", "cris", "Validar o texto criado a partir do briefing", "Página no novo formato, com lista de espera. Se for aprovada, não precisa mudar nada; se não, voltamos ao texto."],
+      ["pl-env", "claude", "Página no novo formato com lista de espera", "Capa com foto própria, itens em hover, para quem é, perguntas frequentes e lista de espera.", 5],
+      ["pl-faq", "cris", "Conferir as perguntas frequentes", "Escritas a partir do briefing. Acrescentar as que a Cris receber."],
+      ["pl-btn", "voce", "Testar a lista de espera e o botão fixo de WhatsApp", "A lista guarda no navegador por enquanto. O envio para a Cris depende do backend."],
+      ["pl-cel", "voce", "Conferir no celular e no computador", ""]
+    ] },
+    { id: "g-comunicacao", area: "Páginas de serviço", title: "Página: Treinamento de Comunicação Assertiva", items: [
+      ["pk-txt", "cris", "Validar o texto criado a partir do briefing", "Página no novo formato, com lista de espera. Se for aprovada, não precisa mudar nada; se não, voltamos ao texto."],
+      ["pk-env", "claude", "Página no novo formato com lista de espera", "Capa com foto própria, itens em hover, para quem é, perguntas frequentes e lista de espera.", 5],
+      ["pk-faq", "cris", "Conferir as perguntas frequentes", "Escritas a partir do briefing. Acrescentar as que a Cris receber."],
+      ["pk-btn", "voce", "Testar a lista de espera e o botão fixo de WhatsApp", "A lista guarda no navegador por enquanto. O envio para a Cris depende do backend."],
+      ["pk-cel", "voce", "Conferir no celular e no computador", ""]
+    ] },
+    { id: "g-palestras", area: "Páginas de serviço", title: "Página: Palestras", items: [
+      ["pp-txt", "cris", "Validar o texto criado a partir do briefing", "Página no novo formato, com lista de espera. Se for aprovada, não precisa mudar nada; se não, voltamos ao texto."],
+      ["pp-env", "claude", "Página no novo formato com lista de espera", "Capa com foto própria, itens em hover, para quem é, perguntas frequentes e lista de espera.", 5],
+      ["pp-faq", "cris", "Conferir as perguntas frequentes", "Escritas a partir do briefing. Acrescentar as que a Cris receber."],
+      ["pp-btn", "voce", "Testar a lista de espera e o botão fixo de WhatsApp", "A lista guarda no navegador por enquanto. O envio para a Cris depende do backend."],
+      ["pp-cel", "voce", "Conferir no celular e no computador", ""]
+    ] },
+    { id: "g-navegacao", area: "Páginas de serviço", title: "Navegação entre as páginas", items: [
+      ["b10", "voce", "Caminho de volta para a home", "As páginas novas não têm “Voltar” no topo. O link “Início” fica no rodapé."],
+      ["b17", "voce", "Botão voltar do navegador", "No site com domínio, as páginas devem ter endereços reais."],
+      ["p11", "claude", "Página para endereço inexistente", "Hoje um endereço errado volta para a home sem avisar."]
+    ] },
+
+    /* ===== Textos legais ===== */
+    { id: "g-termos", area: "Textos legais", title: "Página: Termos de uso", items: [
+      ["p09", "voce", "Revisão jurídica do texto", "O texto atual é genérico e está marcado como exemplo."]
+    ] },
+    { id: "g-privacidade", area: "Textos legais", title: "Página: Política de privacidade", items: [
+      ["p10", "voce", "Texto conforme a LGPD", "Incluir quem é o controlador dos dados, o contato para pedidos de exclusão e o prazo de guarda."],
+      ["d10", "voce", "Prazo de guarda e exclusão de dados", "Precisa bater com o que a política diz."],
+      ["q06", "claude", "Aviso de privacidade também na conversa guiada", "Hoje o aviso aparece só no cadastro do material. A conversa guiada também coleta nome e WhatsApp."]
+    ] },
+
+    /* ===== Chat e cadastro ===== */
+    { id: "g-chat-build", area: "Chat e cadastro", title: "Construção do chat e do cadastro", items: [
+      ["n10", "claude", "Chat guiado com perguntas e recomendação de serviço", "", 2],
+      ["n11", "claude", "Cadastro do material gratuito em formato de chat", "", 2],
+      ["n12", "claude", "Um só botão de conversa, e o WhatsApp só no fim do chat", "", 2]
+    ] },
+    { id: "g-chat-teste", area: "Chat e cadastro", title: "Chat guiado: testes e aprovação", items: [
+      ["q01", "voce", "Fazer a conversa inteira no celular e no computador", "Da primeira pergunta até o resultado."],
+      ["q02", "voce", "Testar as validações", "WhatsApp inválido, e-mail inválido, resposta vazia e “Pular” no e-mail."],
+      ["c13", "cris", "Aprovar as perguntas e as regras de recomendação", "Quem recebe qual serviço em cada resposta. Hoje são regras de exemplo."],
+      ["q03", "cris", "Testar cinco perfis e aprovar cada resultado", "Só mentoria, equipe com líderes, quer entender o perfil, palestra e “não sei, quero ajuda”."],
+      ["q09", "cris", "Aprovar o tom e o tempo das mensagens", "A voz da assistente e o intervalo do “digitando…”."],
+      ["q04", "voce", "Resultado salvo", "Ao reabrir o chat, mostra o resultado direto. “Refazer” apaga."],
+      ["b13", "voce", "Botões do resultado abrem o WhatsApp com o nome da pessoa", "“Falar com a Cris sobre isso”, “Conversar sobre isso” e “Falar com a Cris agora”."],
+      ["b14", "voce", "“Refazer a conversa” recomeça do zero", ""],
+      ["b16", "voce", "Link da Política de Privacidade dentro do chat", "Leva à página e fecha o chat."],
+      ["b12", "voce", "Fechar o chat", "Pelo X, pela tecla Esc e clicando fora da janela."],
+      ["q10", "voce", "Decidir se o chat pergunta sobre investimento", "O site não mostra valores. A skill sugere a pergunta, mas hoje ela não existe."],
+      ["r06", "claude", "Prender o foco dentro do chat enquanto ele estiver aberto", "Hoje o foco volta ao botão ao fechar, mas pode escapar para a página por trás."]
+    ] },
+    { id: "g-cadastro", area: "Chat e cadastro", title: "Cadastro do material: testes", items: [
+      ["q05", "voce", "Cadastro com nome, e-mail e WhatsApp", "Ao reabrir, mostra “acesso liberado”."],
+      ["q07", "voce", "Origem do acesso", "Abrir o site com ?src=instagram e conferir se a origem chega junto com o contato."]
+    ] },
+
+    /* ===== Contatos recebidos ===== */
+    { id: "g-banco", area: "Contatos recebidos", title: "Receber os contatos em um banco de dados", intro: "Hoje tudo fica no navegador de quem preenche. A Cris não recebe nada até esta tarefa existir.", items: [
+      ["d01", "voce", "Criar o projeto no Supabase em nome da Cris", "Ou em nome seu, com transferência combinada depois."],
+      ["d02", "claude", "Criar as tabelas", "Respostas do chat, cadastros de materiais e acessos aos materiais, cada uma com a origem."],
+      ["d03", "claude", "Regras de segurança", "Qualquer visitante insere. Só o admin lê e apaga."],
+      ["d04", "claude", "Trocar o armazenamento provisório pelo real", "Mantendo a mesma interface, sem mexer nas telas."],
+      ["q08", "claude", "Falha ao gravar não aparece para o visitante", "Testar com o banco fora do ar."],
+      ["d05", "voce", "Definir como a Cris é avisada de um contato novo", "E-mail, WhatsApp ou os dois."],
+      ["d08", "voce", "Teste de ponta a ponta no site publicado", "Preencher o chat e ver a linha chegar no painel."]
+    ] },
+    { id: "g-admin", area: "Contatos recebidos", title: "Painel admin", items: [
+      ["p13", "voce", "Decidir se o painel entra agora ou depois", "Sem ele, a Cris não vê os contatos."],
+      ["d06", "claude", "Montar o painel", "Login, abas por origem, busca, linha que abre as respostas e exportação em CSV."],
+      ["d07", "voce", "Criar o usuário da Cris e entregar a senha com segurança", "Gerenciador de senhas, não mensagem comum."],
+      ["d09", "voce", "Backup e exportação dos contatos", "Combinar a frequência."]
+    ] },
+
+    /* ===== Identidade visual ===== */
+    { id: "g-ds", area: "Identidade visual", title: "Design system da Cris", items: [
+      ["v01", "cris", "Paleta final decidida", "Taupe #8E8881, areia #E6DFD3, café #4B4037 e branco. Sem dourado.", 2],
+      ["n20", "claude", "Dois temas, Areia (claro) e Café (escuro), com fundos em degradê", "", 2],
+      ["n21", "claude", "Componentes: logo, fundos, título, botão, chip, cartão, moldura de foto, perguntas, chat", "", 2],
+      ["n22", "claude", "Logo oficial vetorizado e incluído em cinco arquivos", "Círculo taupe, areia e café, e o monograma em branco e em café.", 2],
+      ["v09", "claude", "Contraste conferido nos dois temas", "", 2],
+      ["v10", "voce", "Decisão sobre modo claro e escuro", "O site alterna faixas Areia e Café, sem seletor.", 2]
+    ] },
+    { id: "g-ident-site", area: "Identidade visual", title: "Identidade aplicada ao site", items: [
+      ["v02", "claude", "Cores oficiais aplicadas na home, nas páginas e no chat", "", 2],
+      ["n23", "claude", "Logo no rodapé e no cabeçalho do chat", "", 2],
+      ["v06", "cris", "Aprovar a identidade aplicada", "Cores, cantos em arco e botões em pílula."],
+      ["v12", "claude", "Revisar o tom dos textos", "Sóbrio, maduro e prático. Sem promessas milagrosas e sem travessão."]
+    ] },
+    { id: "g-gaia", area: "Identidade visual", title: "Fonte dos títulos", items: [
+      ["c04", "voce", "Decidido: os títulos ficam em Cormorant Garamond", "A Cris não tem os arquivos da Gaia, então fica a fonte escolhida.", 3],
+      ["v03", "claude", "Usar a Cormorant Garamond nos títulos e a Helvetica Light no texto", "", 3]
+    ] },
+    { id: "g-logo", area: "Identidade visual", title: "Logo e favicon", items: [
+      ["c03", "cris", "Logo oficial enviado", "Recebido como imagem.", 2],
+      ["n24", "voce", "Decidido: usar o logo que a Cris enviou, sem versão vetorial", "O traço do site foi vetorizado a partir da imagem, então as bordas são uma aproximação.", 3],
+      ["v04", "voce", "Decidir onde o logo aparece", "Hoje aparece no rodapé e no cabeçalho do chat. Você pediu sem logo acima da foto."],
+      ["v11", "claude", "Favicon e ícone para a tela inicial do celular", "Usa o círculo taupe com o monograma."]
+    ] },
+    { id: "g-anim", area: "Identidade visual", title: "Animações e movimento", intro: "Hoje o movimento é mínimo e discreto. Decidir quanto se quer e onde.", items: [
+      ["a01", "voce", "Decidir o nível geral de animação", "Hoje existem: elevação dos cards e botões, degradê que desliza no botão, “digitando…” do chat, barra de análise, abrir e fechar das perguntas."],
+      ["a02", "voce", "Entrada das seções ao rolar", "Sim ou não. Se sim, o conteúdo precisa ficar visível mesmo sem a animação."],
+      ["a04", "voce", "Transição entre as etapas da mentoria", "Hoje a troca é seca."],
+      ["a06", "voce", "Transição entre a home e as páginas", "Hoje é um corte seco."],
+      ["a07", "voce", "Ver as receitas de efeitos da skill de sites", "Para escolher o que combina com o tom sóbrio da Cris."],
+      ["a08", "claude", "Testar “reduzir movimento” do sistema", "Todas as animações devem parar ou ficar mínimas."],
+      ["a09", "voce", "Conferir fluidez em celular simples", "Nada pode travar ao rolar."]
+    ] },
+
+    /* ===== Qualidade ===== */
+    { id: "g-resp", area: "Qualidade", title: "Celular, navegadores e acessibilidade", intro: "O link vai ficar na bio do Instagram, então a maior parte dos acessos será no celular, dentro do navegador do próprio Instagram.", items: [
+      ["r01", "voce", "Celular de 390 px e de 360 px", "Sem rolagem lateral e sem texto cortado."],
+      ["r02", "voce", "Tablet e telas de 1280 e 1920 px", ""],
+      ["r03", "voce", "Navegador interno do Instagram", "No iPhone e no Android. É por onde a maioria vai chegar."],
+      ["r04", "voce", "Safari do iPhone, Chrome do Android, Chrome, Edge e Firefox no computador", ""],
+      ["r05", "voce", "Navegar só pelo teclado", "Tab alcança tudo, o foco é visível e Esc fecha o chat."],
+      ["r08", "voce", "Alvos de toque de pelo menos 44 px", ""],
+      ["r09", "voce", "Zoom de 200 % sem quebrar o layout", ""]
+    ] },
+    { id: "g-seo", area: "Qualidade", title: "Compartilhamento e busca", items: [
+      ["s01", "claude", "Título e descrição de cada página", "Cada serviço com o seu."],
+      ["s02", "cris", "Imagem de compartilhamento 1200 x 630", "A que aparece quando o link é enviado no WhatsApp ou no Instagram. Precisa da foto."],
+      ["s03", "voce", "Testar a prévia do link", "WhatsApp, mensagem direta do Instagram e LinkedIn."],
+      ["s04", "claude", "Idioma pt-BR, endereço canônico, robots e sitemap", ""],
+      ["s05", "claude", "Painel admin fora da busca", "Marca noindex."],
+      ["s06", "voce", "Decidir sobre Google Search Console e Perfil da Empresa no Google", "Opcional, mas ajuda quem busca o nome dela."]
+    ] },
+    { id: "g-revisao", area: "Qualidade", title: "Revisão final de qualidade", items: [
+      ["f01", "claude", "Busca por travessão em todo o texto", "Conferido na versão 5, em 03/11. Repetir se o texto mudar.", 2],
+      ["f02", "claude", "Busca por valores e preços", "Conferido na versão 5, em 03/11. Repetir se o texto mudar.", 2],
+      ["f06", "claude", "Console do navegador sem erros", "Conferido na versão 5, em 03/11.", 2],
+      ["f03", "voce", "Leitura completa de ortografia e acentuação", "Cada texto de cada página."],
+      ["f04", "claude", "Busca por palavras que não podem aparecer", "“provisório”, “Exemplo”, “Judson”, “Claude”, “lorem”."],
+      ["f05", "voce", "Nenhum número ou depoimento inventado no ar", ""],
+      ["f07", "voce", "Velocidade no celular", "Lighthouse, com atenção ao peso das fotos."],
+      ["f08", "voce", "Links externos funcionando", "Instagram e www.crisreis.com."],
+      ["f09", "voce", "Mostrar a uma pessoa de fora", "Pedir que tente entender o que a Cris faz e como contratar, sem ajuda."]
+    ] },
+
+    /* ===== Publicação ===== */
+    { id: "g-dominio", area: "Publicação", title: "Domínio e DNS", intro: "O domínio já existe. Falta apontar para uma hospedagem.", items: [
+      ["h01", "voce", "Confirmar o domínio crisreis.com", "Quem é o titular, onde está registrado e se há acesso ao painel de DNS."],
+      ["h02", "voce", "Escolher o endereço principal", "crisreis.com ou www.crisreis.com. O briefing usa www. O outro deve redirecionar."],
+      ["h07", "voce", "Apontar o DNS para a hospedagem", "Cuidado para não apagar os registros de e-mail (MX) se ela tiver e-mail no domínio."],
+      ["h08", "voce", "HTTPS ativo e redirecionamento de http", "Sem aviso de certificado."]
+    ] },
+    { id: "g-hospedagem", area: "Publicação", title: "Hospedagem e publicação", items: [
+      ["h03", "voce", "Escolher a hospedagem e criar a conta", "A skill prevê Cloudflare. Decidir se a conta fica em nome da Cris."],
+      ["h04", "claude", "Converter a página em site com endereços reais", "Hoje é um arquivo único com rotas por # (como #mentoria-singular). No domínio ficam /mentoria-singular e assim por diante."],
+      ["h09", "claude", "Hospedar fontes e imagens no próprio site", "Hoje as fontes vêm do Google Fonts."],
+      ["h05", "voce", "Criar o repositório privado no GitHub", ""],
+      ["h06", "voce", "Publicar uma versão de teste em um endereço provisório", "Por exemplo teste.crisreis.com, para a Cris aprovar antes do endereço final."],
+      ["h10", "voce", "Decidir sobre estatísticas de acesso", "Plausible, Google Analytics ou Meta Pixel. Se usar rastreio, avaliar aviso de cookies."],
+      ["h11", "voce", "Atualizar o link da bio do Instagram", "Usar ?src=instagram para saber o que vem de lá."],
+      ["h12", "voce", "Teste final no domínio real", "Repetir botões, chat e cadastro."],
+      ["h13", "voce", "Plano de volta", "Guardar a versão anterior do site para voltar se algo falhar."]
+    ] },
+
+    /* ===== Entrega ===== */
+    { id: "g-entrega", area: "Entrega", title: "Entrega à Cris", items: [
+      ["e01", "voce", "Apresentar o layout e receber a aprovação por escrito", "Seções, cores, fotos e textos."],
+      ["e02", "voce", "Enviar a lista do que depende dela, com prazo", "Está no bloco “Pedidos à Cris”, no alto desta página."],
+      ["e03", "voce", "Entregar os acessos em nome dela", "Domínio, hospedagem, GitHub, Supabase e painel admin."],
+      ["e04", "voce", "Mostrar como ver e exportar os contatos", "Uma demonstração curta no painel."],
+      ["e05", "voce", "Combinar manutenção", "Quem altera textos, em quanto tempo e a que custo."],
+      ["e06", "voce", "Combinar o que fica fora do escopo", "Páginas de venda completas, formulário por serviço, blog."],
+      ["p12", "voce", "Decidir se haverá formulário de contato por serviço", "Hoje os botões vão direto ao WhatsApp, como o briefing pediu."],
+      ["e07", "claude", "Guia curto de como editar", "Onde ficam os textos e como trocar uma foto."],
+      ["e08", "voce", "Revisar com ela em 7 e em 30 dias", "Contatos recebidos, cliques e dúvidas."],
+      ["e09", "voce", "Combinar a data de entrada no ar", ""]
+    ] },
+
+    /* ===== Depois da entrega ===== */
+    { id: "g-pedidos", area: "Entrega", title: "Depois de publicar: o que pedir à Cris", intro: "Só copy, informações e redirecionamentos. Layout e detalhes visuais não vão para ela.", items: [
+      ["pd-esb", "cris", "Logo do Esbelt ON", "Para colocar no card da home no lugar do nome em texto."],
+      ["pd-esbw", "cris", "O botão da Esbelt leva para o seu WhatsApp?", "Se houver um link próprio de licenciamento, enviar o link."],
+      ["pd-calc", "cris", "A Calculadora de Valor é gratuita ou paga? Se for gratuita, enviar o arquivo", "Hoje o botão da home diz “Em breve”. Com o arquivo, ele volta a liberar o acesso."],
+      ["pd-an", "cris", "Áudio explicando a Análise de Perfil Comportamental", "Um áudio, do jeito dela. Pode ser longo e repetitivo; vira a estrutura da copy."],
+      ["pd-co", "cris", "Áudio explicando o Treinamento Comercial GIRO, PULSO & PRAC", "Um áudio, do jeito dela, sem limite de tempo."],
+      ["pd-li", "cris", "Áudio explicando o Treinamento de Líderes", "Um áudio, do jeito dela, sem limite de tempo."],
+      ["pd-cm", "cris", "Áudio explicando o Treinamento de Comunicação Assertiva", "Um áudio, do jeito dela, sem limite de tempo."],
+      ["pd-pa", "cris", "Áudio explicando as Palestras", "Um áudio, do jeito dela, sem limite de tempo."],
+      ["pd-6m", "cris", "A mentoria é de 6 meses, com 12 encontros, um a cada 15 dias?", "O site diz isso. Confirmar também a divisão das fases por mês."],
+      ["pd-ap", "cris", "Aprovar a página da Mentoria e a conversa do chat", "Textos, nomes das fases e perguntas do formulário."],
+      ["pd-ag", "cris", "Link da agenda para a sessão de diagnóstico", "Entra no fim do formulário no lugar do botão de WhatsApp."],
+      ["pd-mail", "voce", "Ligar o envio das respostas para cristiany1@gmail.com", "Depende do backend. O site guarda as respostas só no navegador por enquanto."]
+    ] },
+    { id: "g-depoimentos", area: "Depois da entrega", title: "Depoimentos reais", intro: "Ficaram para um segundo momento. A página vai ao ar sem eles.", items: [
+      ["c09", "cris", "Receber os depoimentos com nome, profissão e autorização", ""],
+      ["n30", "claude", "Colocar a seção “Quem fez a mentoria” de volta na home", "O layout fica guardado e volta em poucos minutos."],
+      ["c16", "cris", "Decidir se haverá logos de empresas atendidas", "Hoje a prova social seriam só depoimentos de pessoas."]
+    ] }
+  ];
+  var PRESET_CLOSED = { "g-base": 2, "g-chat-build": 2, "g-ds": 2, "g-gaia": 3 };
+
+  /* ---------- Estado ---------- */
+  var DOC_PATH = "checklist/state";
+  var LS_KEY = "cris_checklist_v2";
+  var LS_OPEN = "cris_checklist_open_v2";
+  var SEED = 5;
+  var WHO = { cris: "Cris", voce: "Você", claude: "Claude" };
+
+  var ALL_IDS = {}, GROUP_IDS = {}, PRESET_DONE = {}, ROW_GROUP = {};
+  GROUPS.forEach(function (g) {
+    GROUP_IDS[g.id] = true;
+    g.items = g.items.map(function (r) {
+      ALL_IDS[r[0]] = true; ROW_GROUP[r[0]] = g.id;
+      if (r[4]) PRESET_DONE[r[0]] = r[4];
+      return { id: r[0], who: r[1], t: r[2], d: r[3] };
+    });
+  });
+
+  var done = {}, closed = {}, seeded = false;
+  var tab = "todo";
+  var filter = { who: "all", pending: false };
+  var openState = {};
+  try { openState = JSON.parse(localStorage.getItem(LS_OPEN) || "{}") || {}; } catch (e) {}
+
+  function pick(o, ids) {
+    var r = {};
+    if (o && typeof o === "object") Object.keys(o).forEach(function (k) { if (ids[k] && o[k]) r[k] = true; });
+    return r;
+  }
+  /* Aplica um estado salvo. Na primeira vez (sem a marca de versão), junta o que já estava pronto hoje. */
+  function applyState(data) {
+    data = data || {};
+    done = pick(data.done, ALL_IDS);
+    closed = pick(data.closed, GROUP_IDS);
+    var from = typeof data.seed === "number" ? data.seed : 0;
+    if (from < SEED) {
+      Object.keys(PRESET_DONE).forEach(function (k) { if (PRESET_DONE[k] > from) done[k] = true; });
+      Object.keys(PRESET_CLOSED).forEach(function (k) { if (PRESET_CLOSED[k] > from) closed[k] = true; });
+      seeded = true;
+    }
+  }
+  try { var cached = JSON.parse(localStorage.getItem(LS_KEY) || "null"); applyState(cached); } catch (e) { applyState(null); }
+
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text) n.textContent = text; return n; }
+  var reduce = false;
+  try { reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+
+  /* ---------- Montagem ---------- */
+  var listEl = document.getElementById("list");
+  var refs = {};       // id do grupo -> {det, count, fill, rows, foot, btn, hint, group}
+  var areas = [];      // {name, box, h2, groups:[ids]}
+  var areaByName = {};
+
+  GROUPS.forEach(function (g) {
+    var a = areaByName[g.area];
+    if (!a) {
+      var box = el("section", "area"); box.id = "area-" + areas.length;
+      var h2 = el("h2", "", g.area); box.appendChild(h2);
+      a = { name: g.area, box: box, ids: [], idx: areas.length };
+      areas.push(a); areaByName[g.area] = a; listEl.appendChild(box);
+    }
+    a.ids.push(g.id);
+    var det = el("details", "grp"); det.id = "grp-" + g.id;
+    var sum = el("summary");
+    sum.appendChild(el("span", "st", g.title));
+    var count = el("span", "sc", "0/0"); sum.appendChild(count);
+    if (g.intro) sum.appendChild(el("span", "sintro", g.intro));
+    var track = el("span", "strack"); var fill = el("span", "sfill"); track.appendChild(fill); sum.appendChild(track);
+    det.appendChild(sum);
+    var items = el("div", "items");
+    var rows = [];
+    g.items.forEach(function (it) {
+      var row = el("label", "row"); row.setAttribute("data-id", it.id);
+      var cb = el("input"); cb.type = "checkbox"; cb.id = "ck-" + it.id;
+      var body = el("span");
+      body.appendChild(el("span", "t", it.t));
+      if (it.d) body.appendChild(el("span", "d", it.d));
+      row.appendChild(cb); row.appendChild(body); row.appendChild(el("span", "who who-" + it.who, WHO[it.who]));
+      items.appendChild(row);
+      rows.push({ row: row, input: cb, item: it });
+    });
+    det.appendChild(items);
+    var foot = el("div", "gfoot");
+    var btn = el("button", "btn", "Marcar tarefa como concluída"); btn.type = "button"; btn.setAttribute("data-grp", g.id);
+    var hint = el("span", "note");
+    foot.appendChild(btn); foot.appendChild(hint);
+    det.appendChild(foot);
+    det.addEventListener("toggle", function () {
+      openState[g.id] = det.open;
+      try { localStorage.setItem(LS_OPEN, JSON.stringify(openState)); } catch (e) {}
+    });
+    a.box.appendChild(det);
+    refs[g.id] = { det: det, count: count, fill: fill, rows: rows, btn: btn, hint: hint, group: g, area: a, initOpen: false };
+  });
+  GROUPS.forEach(function (g) {
+    var r = refs[g.id];
+    r.det.open = openState[g.id] !== undefined ? !!openState[g.id] : !closed[g.id];
+  });
+  var empty = el("p", "empty"); empty.hidden = true; listEl.appendChild(empty);
+
+  /* ---------- Abas, filtros e atalhos ---------- */
+  var tabsEl = document.getElementById("tabs"), tabRefs = {};
+  [["todo", "A fazer"], ["ready", "Prontas"]].forEach(function (p) {
+    var b = el("button", "tab"); b.type = "button"; b.setAttribute("role", "tab");
+    b.addEventListener("click", function () { tab = p[0]; update(); window.scrollTo(0, 0); });
+    tabsEl.appendChild(b); tabRefs[p[0]] = { btn: b, label: p[1] };
+  });
+
+  var filtersEl = document.getElementById("filters"), chipRefs = {};
+  [["all", "Todos"], ["cris", "Cris"], ["voce", "Você"], ["claude", "Claude"]].forEach(function (p) {
+    var b = el("button", "chip"); b.type = "button";
+    b.addEventListener("click", function () { filter.who = p[0]; update(); });
+    filtersEl.appendChild(b); chipRefs[p[0]] = { btn: b, label: p[1] };
+  });
+  filtersEl.appendChild(el("span", "sp"));
+  var tg = el("label", "toggle"); var tgIn = el("input"); tgIn.type = "checkbox"; tgIn.id = "only-pending";
+  tgIn.addEventListener("change", function () { filter.pending = tgIn.checked; update(); });
+  tg.appendChild(tgIn); tg.appendChild(document.createTextNode("Só pendentes"));
+  filtersEl.appendChild(tg);
+  var allBtn = el("button", "chip", "Recolher tudo"); allBtn.type = "button";
+  allBtn.addEventListener("click", function () {
+    var anyOpen = GROUPS.some(function (g) { return refs[g.id].det.open && !refs[g.id].det.hidden; });
+    GROUPS.forEach(function (g) { refs[g.id].det.open = !anyOpen; });
+    allBtn.textContent = anyOpen ? "Expandir tudo" : "Recolher tudo";
+  });
+  filtersEl.appendChild(allBtn);
+
+  var jumpEl = document.getElementById("jump"), jumpRefs = [];
+  areas.forEach(function (a) {
+    var b = el("button", "", a.name); b.type = "button";
+    b.addEventListener("click", function () { a.box.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); });
+    jumpEl.appendChild(b); jumpRefs.push(b);
+  });
+
+  /* ---------- Pedidos à Cris ---------- */
+  var askList = document.getElementById("ask-list"), askSum = document.getElementById("ask-sum");
+  function pendingCris() {
+    var out = [];
+    GROUPS.forEach(function (g) {
+      if (g.id === "g-depoimentos") return;
+      g.items.forEach(function (it) { if (it.who === "cris" && !done[it.id]) out.push({ g: g, it: it }); });
+    });
+    return out;
+  }
+  function renderAsk() {
+    var p = pendingCris();
+    askList.textContent = "";
+    p.forEach(function (x) {
+      var li = el("li"); li.appendChild(el("b", "", x.g.title.replace(/^Página: |^Home: /, "") + ": ")); li.appendChild(document.createTextNode(x.it.t));
+      askList.appendChild(li);
+    });
+    askSum.textContent = "Pedidos à Cris, " + p.length + " pendentes";
+    return p;
+  }
+  document.getElementById("ask-copy").addEventListener("click", function () {
+    var p = pendingCris();
+    var txt = "Oi, Cris! Para fechar o site, preciso de:\n\n" + p.map(function (x, i) { return (i + 1) + ". " + x.it.t + " (" + x.g.title.replace(/^Página: |^Home: /, "") + ")"; }).join("\n");
+    var msg = document.getElementById("ask-msg");
+    function ok() { msg.textContent = "Lista copiada."; }
+    function fail() { msg.textContent = "Não consegui copiar. Selecione a lista acima e copie."; }
+    try { navigator.clipboard.writeText(txt).then(ok, fail); } catch (e) { fail(); }
+  });
+
+  /* ---------- Atualização da tela ---------- */
+  function update() {
+    var itemTotal = 0, itemDone = 0, grpTotal = GROUPS.length, grpClosed = 0, nTodo = 0, nReady = 0;
+    var pend = { cris: 0, voce: 0, claude: 0 };
+    GROUPS.forEach(function (g) {
+      var r = refs[g.id], n = 0, d = 0, visible = 0, isClosed = !!closed[g.id];
+      r.rows.forEach(function (x) {
+        var isDone = !!done[x.item.id];
+        n++; if (isDone) d++; else if (!isClosed) pend[x.item.who]++;
+        x.input.checked = isDone; x.input.disabled = isClosed;
+        x.row.classList.toggle("is-done", isDone);
+        var hide = !isClosed && ((filter.who !== "all" && x.item.who !== filter.who) || (filter.pending && isDone));
+        x.row.hidden = hide; if (!hide) visible++;
+      });
+      itemTotal += n; itemDone += d; if (isClosed) { grpClosed++; nReady++; } else nTodo++;
+      r.count.textContent = isClosed ? "Concluída" : d + "/" + n;
+      r.fill.style.width = (n ? Math.round(d / n * 100) : 0) + "%";
+      var all = d === n;
+      r.det.classList.toggle("ready", all && !isClosed);
+      r.det.classList.toggle("closed", isClosed);
+      r.btn.textContent = isClosed ? "Reabrir tarefa" : "Marcar tarefa como concluída";
+      r.btn.classList.toggle("ghost", isClosed);
+      r.btn.disabled = !isClosed && !all;
+      r.hint.textContent = isClosed ? "" : (all ? "Todas as subtarefas estão marcadas." : "Faltam " + (n - d) + " " + (n - d === 1 ? "subtarefa" : "subtarefas") + " para poder concluir.");
+      var show = tab === "ready" ? isClosed : (!isClosed && visible > 0);
+      r.det.hidden = !show;
+    });
+    areas.forEach(function (a, i) {
+      var any = a.ids.some(function (id) { return !refs[id].det.hidden; });
+      a.box.hidden = !any; jumpRefs[i].hidden = !any;
+    });
+    var anyArea = areas.some(function (a) { return !a.box.hidden; });
+    empty.hidden = anyArea;
+    empty.textContent = tab === "ready" ? "Nenhuma tarefa concluída ainda. Marque uma tarefa como concluída para ela aparecer aqui." : "Nada pendente com este filtro.";
+    filtersEl.hidden = tab === "ready"; jumpEl.hidden = tab === "ready";
+    var pct = itemTotal ? Math.round(itemDone / itemTotal * 100) : 0;
+    document.getElementById("top-count").textContent = grpClosed + " de " + grpTotal + " tarefas · " + itemDone + " de " + itemTotal + " subtarefas";
+    document.getElementById("top-fill").style.width = pct + "%";
+    document.getElementById("top-track").setAttribute("aria-valuenow", String(pct));
+    tabRefs.todo.btn.textContent = "A fazer, " + nTodo;
+    tabRefs.ready.btn.textContent = "Prontas, " + nReady;
+    Object.keys(tabRefs).forEach(function (k) { tabRefs[k].btn.setAttribute("aria-selected", tab === k ? "true" : "false"); });
+    var tot = pend.cris + pend.voce + pend.claude;
+    chipRefs.all.btn.textContent = "Todos, " + tot + " pendentes";
+    chipRefs.cris.btn.textContent = "Cris, " + pend.cris;
+    chipRefs.voce.btn.textContent = "Você, " + pend.voce;
+    chipRefs.claude.btn.textContent = "Claude, " + pend.claude;
+    Object.keys(chipRefs).forEach(function (k) { chipRefs[k].btn.setAttribute("aria-pressed", filter.who === k ? "true" : "false"); });
+    renderAsk();
+  }
+
+  /* ---------- Gravação ---------- */
+  var statusEl = document.getElementById("savestate"), movedEl = document.getElementById("moved");
+  function setStatus(kind, text) { statusEl.setAttribute("data-kind", kind); statusEl.textContent = text; }
+  var dbDoc = null, writing = false, dirty = false, saveTimer = null, loadTimer = null;
+  function snapshot() { return { done: Object.assign({}, done), closed: Object.assign({}, closed), seed: SEED }; }
+  function persistLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(snapshot())); } catch (e) {} }
+
+  function scheduleSave() {
+    persistLocal();
+    if (!dbDoc) { setStatus("local", "Salvo só neste navegador"); return; }
+    dirty = true; setStatus("saving", "Salvando…");
+    clearTimeout(saveTimer); saveTimer = setTimeout(flush, 500);
+  }
+  function flush() {
+    if (writing || !dirty || !dbDoc) return;
+    writing = true; dirty = false;
+    var s = snapshot(); s.updatedAt = new Date().toISOString();
+    dbDoc.set(s).then(function () {
+      writing = false;
+      if (dirty) flush(); else setStatus("ok", "Salvo na nuvem");
+    }).catch(function (e) {
+      writing = false;
+      setStatus("err", e && e.code === "invalid_argument"
+        ? "Sem permissão para gravar na nuvem. As marcações ficam neste navegador."
+        : "Não consegui salvar na nuvem. As marcações ficam neste navegador.");
+    });
+  }
+
+  listEl.addEventListener("change", function (e) {
+    var t = e.target;
+    if (!t || t.type !== "checkbox") return;
+    var row = t.closest(".row"); if (!row) return;
+    var id = row.getAttribute("data-id");
+    if (t.checked) done[id] = true; else delete done[id];
+    movedEl.textContent = "";
+    update(); scheduleSave();
+  });
+  listEl.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest(".gfoot .btn") : null;
+    if (!b || b.disabled) return;
+    var id = b.getAttribute("data-grp"), r = refs[id];
+    if (closed[id]) {
+      delete closed[id]; r.det.open = true;
+      movedEl.textContent = "“" + r.group.title + "” voltou para A fazer.";
+    } else {
+      closed[id] = true; r.det.open = false;
+      movedEl.textContent = "“" + r.group.title + "” foi para Prontas.";
+    }
+    update(); scheduleSave();
+  });
+
+  update();
+  if (seeded) persistLocal();
+
+  /* ---------- Nuvem ---------- */
+  function connect() {
+    var p;
+    try { p = (window.claude && window.claude.use) ? window.claude.use("db") : Promise.resolve(null); } catch (e) { p = Promise.resolve(null); }
+    p.then(function (db) {
+      if (!db) { setStatus("local", "Salvo só neste navegador"); return; }
+      dbDoc = db.doc(DOC_PATH);
+      setStatus("idle", "Conectando…");
+      loadTimer = setTimeout(function () { setStatus("err", "A nuvem demorou a responder. Mostrando as marcações salvas neste navegador."); }, 10000);
+      dbDoc.onSnapshot(function (snap) {
+        if (!snap.metadata.fromCache) clearTimeout(loadTimer);
+        if (writing || dirty) return;
+        if (snap.exists) {
+          seeded = false; applyState(snap.data());
+          persistLocal(); update();
+          if (seeded) { dirty = true; flush(); }
+          else if (!snap.metadata.fromCache) setStatus("ok", "Salvo na nuvem");
+        } else if (!snap.metadata.fromCache) {
+          dirty = true; flush();
+        }
+      }, function () {
+        clearTimeout(loadTimer);
+        setStatus("err", "Não consegui falar com a nuvem. As marcações ficam neste navegador.");
+      });
+    }).catch(function () { setStatus("local", "Salvo só neste navegador"); });
+  }
+  connect();
+})();
+</script>
