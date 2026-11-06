@@ -1,6 +1,6 @@
 # Publica o site no Hostinger (public_html) a cada envio para a branch main.
 # Segredos necessários (GitHub > Settings > Secrets and variables > Actions):
-#   FTP_SERVER, FTP_USERNAME, FTP_PASSWORD e, se a pasta do FTP não for a public_html, FTP_DIR.
+#   FTP_SERVER, FTP_USERNAME, FTP_PASSWORD e, se a conta FTP não abrir direto na public_html, FTP_DIR.
 name: Publicar no Hostinger
 
 on:
@@ -24,7 +24,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
-          server-dir: ${{ secrets.FTP_DIR || '/public_html/' }}
+          server-dir: ${{ secrets.FTP_DIR || './' }}
           exclude: |
             **/.git*
             **/.git*/**
