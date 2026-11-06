@@ -1,0 +1,11 @@
+# Codificação correta dos acentos
+AddDefaultCharset UTF-8
+DirectoryIndex index.html
+
+# Não publicar arquivos internos do repositório
+RedirectMatch 404 ^/(docs(/.*)?|README\.md|\.git.*)$
+
+# Forçar HTTPS
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
