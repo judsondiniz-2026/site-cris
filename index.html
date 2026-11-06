@@ -511,6 +511,12 @@ body.v-svc .m-progress { display: block; }
 .a-hm{display:grid;grid-template-columns:34px repeat(24,1fr);gap:2px;font-size:10px;color:var(--muted)}
 .a-hm div{aspect-ratio:1;border-radius:3px;background:var(--accent)}
 .a-hm span{align-self:center}
+.a-chip.k-parcial{border-style:dashed}
+.a-susp{display:inline-block;font-size:11px;border-radius:999px;padding:2px 9px;background:#f3e3df;color:#6b2f22;border:1px solid #c9a59c;margin-top:4px}
+.adm-btn.d{border-color:#a4503f;color:#7a2e1f}
+.adm-btn[disabled]{opacity:.45;cursor:default}
+.adm-msg{font-size:13px;border:1px solid #c9a59c;background:#f8ece8;color:#6b2f22;border-radius:12px;padding:12px 14px;margin-bottom:18px}
+.a-ck{width:18px;height:18px;accent-color:var(--accent)}
 
 @media (max-width:760px){.admin{padding-block:24px 56px}.a-fn{grid-template-columns:1fr}.a-fn em{text-align:left}.adm-grid{grid-template-columns:1fr}.a-bar{grid-template-columns:minmax(80px,45%) 1fr auto}.a-hm{gap:1px}.adm-top{align-items:flex-start}}
 .admin .adm-card{overflow:hidden}
@@ -813,7 +819,7 @@ body.v-svc .m-progress { display: block; }
     <h2>Para que usamos</h2>
     <p>Para responder ao seu contato, indicar o serviço mais adequado e enviar o material solicitado. Não vendemos nem cedemos seus dados a terceiros para publicidade.</p>
     <h2>Como medimos o uso do site</h2>
-    <p>Registramos de forma própria quais páginas são visitadas, os botões clicados, o tempo de permanência e a origem do acesso (por exemplo, o link do Instagram), usando um identificador anônimo do navegador. Se você enviar um formulário, essas visitas passam a ser associadas ao seu cadastro, para que a Cris entenda o seu interesse e responda melhor. Não usamos cookies de publicidade.</p>
+    <p>Registramos de forma própria quais páginas são visitadas, os botões clicados, o tempo de permanência e a origem do acesso (por exemplo, o link do Instagram), usando um identificador anônimo do navegador. Se você enviar um formulário, essas visitas passam a ser associadas ao seu cadastro, para que a Cris entenda o seu interesse e responda melhor. Se você começar a preencher um formulário e sair antes de enviar, as respostas já digitadas podem ser registradas. Não usamos cookies de publicidade.</p>
     <h2>Por quanto tempo guardamos</h2>
     <p>Pelo tempo necessário para atender a sua solicitação ou cumprir obrigações legais. Você pode pedir a exclusão a qualquer momento.</p>
     <h2>Seus direitos</h2>
@@ -1402,7 +1408,7 @@ body.v-svc .m-progress { display: block; }
     foot.textContent = "";
     bubble("user", v || "Pular");
     state.answers[q.field] = v;
-    try { CT.track("chat_step", { flow: flowId(), field: q.field, i: state.i }); } catch (e) {}
+    try { CT.track("chat_step", { flow: flowId(), field: q.field, i: state.i, v: (Array.isArray(v) ? v.join(", ") : String(v == null ? "" : v)).slice(0, 500) }); } catch (e) {}
     state.i += 1;
     askNext();
   }
@@ -1600,7 +1606,7 @@ body.v-svc .m-progress { display: block; }
   var SUPA = CT.supa, remoteOn = !!(SUPA.url && SUPA.key);
   var PAGES = { home: "Página inicial", "mentoria-singular": "Mentoria Singular", "analise-de-perfil": "Análise de Perfil", "treinamento-comercial": "Treinamento Comercial", "treinamento-de-lideres": "Treinamento de Líderes", "treinamento-de-comunicacao": "Comunicação Assertiva", palestras: "Palestras", "termos-de-uso": "Termos de uso", "politica-de-privacidade": "Política de privacidade" };
   var SERV = ["mentoria-singular", "analise-de-perfil", "treinamento-comercial", "treinamento-de-lideres", "treinamento-de-comunicacao", "palestras"];
-  var KINDS = { chat: "Conversa guiada", materiais: "Materiais", diagnostico: "Diagnóstico", espera: "Lista de espera" };
+  var KINDS = { chat: "Conversa guiada", materiais: "Materiais", diagnostico: "Diagnóstico", espera: "Lista de espera", parcial: "Incompleto" };
   var STATUS = ["Novo", "Contatada", "Sessão agendada", "Em negociação", "Fechou", "Sem interesse"];
   var FLOWN = { espera: "Lista de espera", guia: "Conversa guiada", material: "Materiais gratuitos", diagnostico: "Diagnóstico" };
   var TEXTF = { faz: "O que faz", area: "Área", modelo: "Negócio", valor: "Valor do serviço", desafio: "Desafio", objetivo: "Objetivo", mensagem: "Mensagem" };
@@ -1618,7 +1624,7 @@ body.v-svc .m-progress { display: block; }
   function dt(ts) { var d = new Date(ts); return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) + " " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }); }
   function pname(p) { return PAGES[p] || p || "-"; }
 
-  var S = { tab: "geral", period: "30", data: null, q: "", fKind: "", fHeat: "", fStatus: "", sel: null, wf: "all", word: "", token: "", err: "" };
+  var S = { fSusp: "hide", chk: {}, msg: "", tab: "geral", period: "30", data: null, q: "", fKind: "", fHeat: "", fStatus: "", sel: null, wf: "all", word: "", token: "", err: "" };
   try { S.token = sessionStorage.getItem("cris_adm_tok") || ""; } catch (e) {}
   var META = rd("cris_adm_meta", {});
 
@@ -1655,7 +1661,77 @@ body.v-svc .m-progress { display: block; }
     S.err = "";
     if (remoteOn && !S.token) { S.data = null; draw(); return; }
     root.innerHTML = '<p class="adm-empty">Carregando dados...</p>';
-    (remoteOn ? loadRemote() : loadLocal()).then(function (d) { S.data = d; META = d.meta || META; draw(); }).catch(function (e) { S.err = e.message === "auth" ? "Sessão expirada. Entre de novo." : "Não consegui carregar os dados."; S.data = null; draw(); });
+    (remoteOn ? loadRemote() : loadLocal()).then(function (d) { addPartials(d); S.data = d; META = d.meta || META; draw(); }).catch(function (e) { S.err = e.message === "auth" ? "Sessão expirada. Entre de novo." : "Não consegui carregar os dados."; S.data = null; draw(); });
+  }
+
+  /* ---------- Formulários pela metade ---------- */
+  var FLK = { guia: "chat", material: "materiais", diagnostico: "diagnostico", espera: "espera" };
+  function addPartials(d) {
+    var by = {}, sidSrc = {};
+    d.events.forEach(function (e) {
+      if (e.type === "session_start") sidSrc[e.sid] = (e.data && e.data.src) || "";
+      if (e.type === "chat_open" || e.type === "chat_step" || e.type === "chat_close") (by[e.vid] = by[e.vid] || []).push(e);
+    });
+    var out = [];
+    Object.keys(by).forEach(function (v) {
+      var evs = by[v].sort(function (a, b) { return a.ts < b.ts ? -1 : 1; }), run = null;
+      function fin() {
+        if (run && !run.done && Object.keys(run.ans).length) {
+          var kind = FLK[run.flow] || run.flow, later = d.leads.some(function (l) { return l.vid === v && l.kind === kind && l.ts >= run.first; });
+          if (!later) {
+            var a = run.ans;
+            out.push({ id: "p_" + run.id, ts: run.last, vid: v, sid: run.sid, kind: "parcial", page: run.page, source: sidSrc[run.sid] || "", email_key: String(a.email || "").trim().toLowerCase(), phone_key: String(a.whatsapp || "").replace(/\D/g, "").slice(-11), payload: Object.assign({}, a, { _flow: run.flow, parou: run.field || "" }) });
+          }
+        }
+        run = null;
+      }
+      evs.forEach(function (e) {
+        var f = e.data && e.data.flow;
+        if (e.type === "chat_open" || !run) { if (e.type === "chat_open") fin(); if (!run) run = { flow: f, id: e.id, sid: e.sid, page: e.page, ans: {}, first: e.ts, last: e.ts, done: false, field: "" }; if (e.type === "chat_open") return; }
+        if (e.type === "chat_step") { if (e.data.v != null && e.data.v !== "") run.ans[e.data.field] = e.data.v; run.last = e.ts; }
+        if (e.type === "chat_close") { if (e.data.done) run.done = true; else run.field = e.data.field || ""; }
+      });
+      fin();
+    });
+    d.leads = d.leads.concat(out);
+    return d;
+  }
+
+  /* ---------- Acessos sem interesse (suspeitos) ---------- */
+  var MASH = ["qwer", "asdf", "zxcv", "hjkl", "sdfg", "dfgh", "fghj", "ghjk", "wert", "erty", "rtyu", "tyui", "yuio", "uiop", "xcvb", "cvbn", "vbnm", "jklc"];
+  function junkTxt(s) {
+    var t = String(s || "").trim(); if (!t) return "";
+    var n = norm(t), flat = n.replace(/[^a-z0-9]/g, "");
+    if (/(.)\1{3,}/.test(flat)) return "letras repetidas";
+    for (var i = 0; i < MASH.length; i++) if (flat.indexOf(MASH[i]) >= 0) return "teclas aleatórias";
+    var ws = n.split(/[^a-z]+/).filter(Boolean);
+    for (var j = 0; j < ws.length; j++) if (ws[j].length >= 5 && !/[aeiou]/.test(ws[j])) return "palavra sem sentido";
+    return "";
+  }
+  function distinct(str) { var m = {}; str.split("").forEach(function (c) { m[c] = 1; }); return Object.keys(m).length; }
+  function suspect(p) {
+    var rs = [], seen = {};
+    function add(r) { if (rs.indexOf(r) < 0) rs.push(r); }
+    p.leads.forEach(function (l) {
+      var a = l.payload || {};
+      if (a.nome) { var nn = norm(a.nome).replace(/[^a-z]/g, ""); if (nn.length < 2 || /^(teste|test|asdf|nome|xxx+)$/.test(nn)) add("nome inválido"); else if (junkTxt(a.nome)) add("nome sem sentido"); }
+      var em = String(a.email || "").toLowerCase();
+      if (em && (/^(.)\1*@/.test(em) || /^(teste?|test|asdf|xxx+|abc|aaa+)@/.test(em) || /@(teste|test|exemplo)\./.test(em))) add("e-mail falso");
+      var dg = String(a.whatsapp || "").replace(/\D/g, "").replace(/^55/, "");
+      if (dg && (dg.length < 10 || distinct(dg) <= 2 || /01234567|12345678|23456789|98765432|87654321|76543210/.test(dg))) add("WhatsApp falso");
+      Object.keys(TEXTF).forEach(function (f) {
+        var v = a[f]; if (typeof v !== "string" || !v.trim()) return;
+        var r = junkTxt(v); if (r) add("resposta: " + r);
+        var k = norm(v).replace(/\s+/g, " ").trim(); if (k.length >= 3) { seen[k] = (seen[k] || 0) + 1; if (seen[k] >= 3) add("respostas iguais"); }
+      });
+    });
+    var opened = {};
+    p.events.forEach(function (e) {
+      var f = e.data && e.data.flow;
+      if (e.type === "chat_open") opened[f] = e.ts;
+      else if (e.type === "chat_close" && e.data.done && opened[f]) { var sec = (new Date(e.ts) - new Date(opened[f])) / 1000, th = { diagnostico: 25, espera: 15, guia: 10, material: 10 }[f] || 10; if (sec < th) add("preencheu rápido demais (" + Math.round(sec) + "s)"); }
+    });
+    return rs.join("; ");
   }
 
   /* ---------- Cálculo ---------- */
@@ -1690,6 +1766,7 @@ body.v-svc .m-progress { display: block; }
       p.sessions = uniq(p.events.map(function (e) { return e.sid; })).length;
       p.wa = p.events.filter(function (e) { return e.type === "wa_click"; }).length;
       p.interest = uniq(p.events.filter(function (e) { return e.type === "pageview" && SERV.indexOf(e.page) >= 0; }).map(function (e) { return e.page; }).concat(ls.filter(function (l) { return SERV.indexOf(l.page) >= 0; }).map(function (l) { return l.page; })));
+      p.susp = suspect(p);
       p.score = score(p);
       p.heat = p.score >= 60 ? "q" : p.score >= 30 ? "m" : "f";
       return p;
@@ -1702,7 +1779,7 @@ body.v-svc .m-progress { display: block; }
     if (k.indexOf("espera") >= 0) s += 25;
     if (k.indexOf("materiais") >= 0) s += 15;
     if (k.indexOf("chat") >= 0) s += 15;
-    s += Math.max(0, p.leads.length - 1) * 8;
+    s += Math.max(0, p.leads.filter(function (l) { return l.kind !== "parcial"; }).length - 1) * 8;
     if (p.wa) s += 15;
     if (p.sessions >= 2) s += 10;
     var mt = 0; p.events.forEach(function (e) { if (e.type === "page_time" && e.page === "mentoria-singular") mt += (e.data.sec || 0); });
@@ -1754,9 +1831,9 @@ body.v-svc .m-progress { display: block; }
   function vGeral(d, pe) {
     var ev = d.events.filter(function (e) { return inP(e.ts); }), ss = ev.filter(function (e) { return e.type === "session_start"; });
     var vis = uniq(ev.map(function (e) { return e.vid; })), leads = d.leads.filter(function (l) { return inP(l.ts); });
-    var wa = ev.filter(function (e) { return e.type === "wa_click"; }), ppl = pe.people.filter(function (p) { return inP(p.first); });
+    var wa = ev.filter(function (e) { return e.type === "wa_click"; }), ppl = pe.people.filter(function (p) { return inP(p.first) && p.kinds.some(function (k) { return k !== "parcial"; }); }), inc = pe.people.filter(function (p) { return inP(p.first) && p.kinds.length === 1 && p.kinds[0] === "parcial"; });
     var pt = ev.filter(function (e) { return e.type === "page_time"; }), avg = pt.length ? pt.reduce(function (a, e) { return a + (e.data.sec || 0); }, 0) / uniq(ev.map(function (e) { return e.sid; })).length : 0;
-    var h = '<div class="adm-kpis">' + [[nf(vis.length), "visitantes"], [nf(ss.length), "visitas"], [nf(ppl.length), "pessoas cadastradas"], [pct(ppl.length, vis.length), "visitantes que viraram contato"], [nf(wa.length), "cliques no WhatsApp"], [dur(avg), "tempo médio por visita"]].map(function (k) { return '<div class="a-kpi"><b>' + k[0] + '</b><span>' + k[1] + '</span></div>'; }).join("") + '</div>';
+    var h = '<div class="adm-kpis">' + [[nf(vis.length), "visitantes"], [nf(ss.length), "visitas"], [nf(ppl.length), "pessoas cadastradas"], [pct(ppl.length, vis.length), "visitantes que viraram contato"], [nf(wa.length), "cliques no WhatsApp"], [nf(inc.length), "formulários deixados pela metade"], [dur(avg), "tempo médio por visita"]].map(function (k) { return '<div class="a-kpi"><b>' + k[0] + '</b><span>' + k[1] + '</span></div>'; }).join("") + '</div>';
     var org = count(ss, function (e) { return String(e.data.src || "direto").toLowerCase(); });
     var orgL = org.map(function (o) { var n = ppl.filter(function (p) { return p.src === o[0]; }).length; return [o[0], o[1], o[0] + " (" + n + (n === 1 ? " contato" : " contatos") + ")"]; });
     h += '<div class="adm-grid"><div class="adm-card"><h3>Visitas por dia</h3><p class="hint">Cada barra é um dia.</p>' + dayChart(ev) + '</div>';
@@ -1781,7 +1858,7 @@ body.v-svc .m-progress { display: block; }
     SERV.forEach(function (s) {
       var e = ev.filter(function (x) { return x.page === s; }), pv = e.filter(function (x) { return x.type === "pageview"; }), ppl = uniq(pv.map(function (x) { return x.vid; })), pt = e.filter(function (x) { return x.type === "page_time"; });
       var avg = pt.length ? pt.reduce(function (a, x) { return a + (x.data.sec || 0); }, 0) / pt.length : 0, deep = uniq(e.filter(function (x) { return x.type === "scroll" && x.data.pct >= 75; }).map(function (x) { return x.vid; })).length;
-      h += '<tr><td><b>' + esc(pname(s)) + '</b></td><td>' + ppl.length + '</td><td>' + dur(avg) + '</td><td>' + deep + ' (' + pct(deep, ppl.length) + ')</td><td>' + uniq(e.filter(function (x) { return x.type === "cta_click"; }).map(function (x) { return x.vid; })).length + '</td><td>' + e.filter(function (x) { return x.type === "wa_click"; }).length + '</td><td>' + lds.filter(function (l) { return l.page === s; }).length + '</td></tr>';
+      h += '<tr><td><b>' + esc(pname(s)) + '</b></td><td>' + ppl.length + '</td><td>' + dur(avg) + '</td><td>' + deep + ' (' + pct(deep, ppl.length) + ')</td><td>' + uniq(e.filter(function (x) { return x.type === "cta_click"; }).map(function (x) { return x.vid; })).length + '</td><td>' + e.filter(function (x) { return x.type === "wa_click"; }).length + '</td><td>' + lds.filter(function (l) { return l.page === s && l.kind !== "parcial"; }).length + '</td></tr>';
     });
     h += '</tbody></table></div></div>';
     var chat = {};
@@ -1811,19 +1888,19 @@ body.v-svc .m-progress { display: block; }
   }
   function lastIn(p) { return inP(p.last); }
   function vPessoas(d, pe) {
-    var list = filteredPeople(pe), multi = pe.people.filter(function (p) { return p.leads.length > 1 && lastIn(p); });
+    var list = filteredPeople(pe), nChk = list.filter(function (p) { return S.chk[p.id]; }).length, multi = pe.people.filter(function (p) { return p.leads.length > 1 && lastIn(p); });
     var h = '<div class="adm-bar" style="margin-bottom:14px"><input type="search" id="f-q" placeholder="Buscar nome, e-mail ou WhatsApp" value="' + esc(S.q) + '" aria-label="Buscar">' +
       sel("f-kind", S.fKind, [["", "Todos os formulários"]].concat(Object.keys(KINDS).map(function (k) { return [k, KINDS[k]]; }))) + sel("f-heat", S.fHeat, [["", "Qualquer temperatura"], ["q", "Quentes"], ["m", "Mornos"], ["f", "Frios"]]) + sel("f-st", S.fStatus, [["", "Qualquer status"]].concat(STATUS.map(function (s) { return [s, s]; }))) +
-      '<button class="adm-btn" id="csv" type="button">Exportar CSV</button></div>';
+      '<button class="adm-btn" id="csv" type="button">Exportar CSV</button>' + '<button class="adm-btn d" id="del-sel" type="button"' + (nChk ? "" : " disabled") + '>Excluir selecionados (' + nChk + ')</button>' + (S.nSusp ? '<button class="adm-btn d" id="del-susp" type="button">Excluir todos os suspeitos (' + S.nSusp + ')</button>' : "") + '</div>';
     h += '<p class="hint" style="font-size:13px;color:var(--muted)">' + list.length + (list.length === 1 ? ' pessoa · ' : ' pessoas · ') + multi.length + ' com mais de um formulário (cruzadas pelo mesmo e-mail, WhatsApp ou aparelho).</p>';
     if (!list.length) h += '<p class="adm-empty">Nenhuma pessoa neste filtro.</p>';
-    else h += '<div class="adm-card a-scroll-x"><table class="a-tbl"><thead><tr><th>Pessoa</th><th>Formulários</th><th>Interesse</th><th>Origem</th><th>Temperatura</th><th>Último contato</th><th>Status</th></tr></thead><tbody>' + list.map(function (p) {
+    else h += '<div class="adm-card a-scroll-x"><table class="a-tbl"><thead><tr><th><input type="checkbox" class="a-ck" id="ck-all" aria-label="Selecionar todos"' + (list.length && nChk === list.length ? " checked" : "") + '></th><th>Pessoa</th><th>Formulários</th><th>Interesse</th><th>Origem</th><th>Temperatura</th><th>Último contato</th><th>Status</th></tr></thead><tbody>' + list.map(function (p) {
       var st = (META[p.id] && META[p.id].status) || "Novo";
-      return '<tr class="a-row" tabindex="0" data-p="' + esc(p.id) + '"><td><b>' + esc(p.name || "(sem nome)") + '</b><br><span style="color:var(--muted)">' + esc(p.email || p.phone || "") + '</span></td><td>' + p.kinds.map(function (k) { return '<span class="a-chip k-' + k + '">' + esc(KINDS[k] || k) + '</span>'; }).join("") + '</td><td>' + (p.interest.map(function (i) { return '<span class="a-chip">' + esc(pname(i)) + '</span>'; }).join("") || "-") + '</td><td>' + esc(p.src) + '</td><td><span class="a-heat ' + p.heat + '">' + ({ q: "Quente", m: "Morna", f: "Fria" }[p.heat]) + " · " + p.score + '</span></td><td>' + dt(p.last) + '</td><td>' + esc(st) + '</td></tr>';
+      return '<tr class="a-row" tabindex="0" data-p="' + esc(p.id) + '"><td><input type="checkbox" class="a-ck" data-ck="' + esc(p.id) + '" aria-label="Selecionar"' + (S.chk[p.id] ? " checked" : "") + '></td><td><b>' + esc(p.name || "(sem nome)") + '</b><br><span style="color:var(--muted)">' + esc(p.email || p.phone || "") + '</span>' + (p.susp ? '<br><span class="a-susp" title="' + esc(p.susp) + '">Suspeito: ' + esc(p.susp) + '</span>' : "") + '</td><td>' + p.kinds.map(function (k) { return '<span class="a-chip k-' + k + '">' + esc(KINDS[k] || k) + '</span>'; }).join("") + '</td><td>' + (p.interest.map(function (i) { return '<span class="a-chip">' + esc(pname(i)) + '</span>'; }).join("") || "-") + '</td><td>' + esc(p.src) + '</td><td><span class="a-heat ' + p.heat + '">' + ({ q: "Quente", m: "Morna", f: "Fria" }[p.heat]) + " · " + p.score + '</span></td><td>' + dt(p.last) + '</td><td>' + esc(st) + '</td></tr>';
     }).join("") + '</tbody></table></div>';
     var ha = hotAnon(d, pe).slice(0, 15);
     h += '<div class="adm-card" style="margin-top:16px"><h3>Quentes sem cadastro</h3><p class="hint">Visitantes que clicaram no WhatsApp, abriram formulário ou olharam vários serviços, mas não deixaram contato. Bons candidatos a lembrete no Instagram.</p>' +
-      (ha.length ? '<div class="a-scroll-x"><table class="a-tbl"><thead><tr><th>Visitante</th><th>Viu</th><th>Cliques</th><th>Origem</th><th>Aparelho</th><th>Última visita</th></tr></thead><tbody>' + ha.map(function (a) { return '<tr><td>' + esc(a.vid.slice(2, 8)) + '</td><td>' + (a.svc.map(function (s) { return '<span class="a-chip">' + esc(pname(s)) + '</span>'; }).join("") || "-") + '</td><td>WhatsApp ' + a.wa + ' · formulário ' + a.cta + '</td><td>' + esc(a.src) + '</td><td>' + esc(a.dev) + '</td><td>' + dt(a.last) + '</td></tr>'; }).join("") + '</tbody></table></div>' : '<p class="adm-empty">Ninguém neste perfil no período.</p>') + '</div>';
+      (ha.length ? '<div class="a-scroll-x"><table class="a-tbl"><thead><tr><th>Visitante</th><th>Viu</th><th>Cliques</th><th>Origem</th><th>Aparelho</th><th>Última visita</th><th></th></tr></thead><tbody>' + ha.map(function (a) { return '<tr><td>' + esc(a.vid.slice(2, 8)) + '</td><td>' + (a.svc.map(function (s) { return '<span class="a-chip">' + esc(pname(s)) + '</span>'; }).join("") || "-") + '</td><td>WhatsApp ' + a.wa + ' · formulário ' + a.cta + '</td><td>' + esc(a.src) + '</td><td>' + esc(a.dev) + '</td><td>' + dt(a.last) + '</td><td><button class="adm-btn d" type="button" data-dv="' + esc(a.vid) + '">Excluir</button></td></tr>'; }).join("") + '</tbody></table></div>' : '<p class="adm-empty">Ninguém neste perfil no período.</p>') + '</div>';
     return h;
   }
   function sel(id, val, opts) { return '<select id="' + id + '" aria-label="Filtro">' + opts.map(function (o) { return '<option value="' + esc(o[0]) + '"' + (o[0] === val ? " selected" : "") + '>' + esc(o[1]) + '</option>'; }).join("") + '</select>'; }
@@ -1876,6 +1953,65 @@ body.v-svc .m-progress { display: block; }
       '<button class="adm-btn" id="exp" type="button">Baixar tudo em JSON</button> ' + (remoteOn ? '<button class="adm-btn" id="out" type="button">Sair</button>' : '<button class="adm-btn" id="clr" type="button">Apagar dados deste navegador</button>') + '</div></div>';
   }
 
+  /* ---------- Excluir ---------- */
+  function arm(btn, txt, fn) {
+    if (!btn) return;
+    var orig = btn.textContent, t;
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (btn.dataset.s) { clearTimeout(t); delete btn.dataset.s; fn(); return; }
+      btn.dataset.s = "1"; btn.textContent = txt;
+      t = setTimeout(function () { delete btn.dataset.s; btn.textContent = orig; }, 5000);
+    });
+  }
+  function gather(ids) {
+    var L = {}, V = {}, K = {};
+    ids.forEach(function (id) {
+      var p = S.peAll.people.filter(function (x) { return x.id === id; })[0]; if (!p) return;
+      K[id] = 1; p.leads.forEach(function (l) { L[l.id] = 1; }); p.vids.forEach(function (v) { V[v] = 1; });
+    });
+    return { L: Object.keys(L), V: Object.keys(V), K: Object.keys(K) };
+  }
+  function rdel(table, field, vals, pk) {
+    var parts = [], out = 0, i; for (i = 0; i < vals.length; i += 40) parts.push(vals.slice(i, i + 40));
+    return parts.reduce(function (pr, part) {
+      return pr.then(function () {
+        return fetch(SUPA.url + "/rest/v1/" + table + "?" + field + "=in.(" + part.map(encodeURIComponent).join(",") + ")&select=" + pk, { method: "DELETE", headers: { apikey: SUPA.key, Authorization: "Bearer " + S.token, Prefer: "return=representation" } })
+          .then(function (r) { if (r.status === 401) throw new Error("auth"); if (!r.ok) throw new Error("perm"); return r.json(); }).then(function (rows) { out += rows.length; });
+      });
+    }, Promise.resolve()).then(function () { return out; });
+  }
+  function delLocal(g) {
+    var L = {}, V = {}; g.L.forEach(function (x) { L[x] = 1; }); g.V.forEach(function (x) { V[x] = 1; });
+    var gone = S.data.leads.filter(function (l) { return L[l.id]; });
+    wr(CT.EV_KEY, rd(CT.EV_KEY, []).filter(function (e) { return !V[e.vid]; }));
+    wr("cris_leads_all", rd("cris_leads_all", []).filter(function (l) { return !L[l.id]; }));
+    Object.keys(KINDS).forEach(function (t) {
+      var arr = rd("cris_leads_" + t, []); if (!arr.length) return;
+      var keep = arr.filter(function (o, i) {
+        if (L["old_" + t + i]) return false;
+        return !gone.some(function (l) { return l.kind === t && ((o.email && l.email_key && l.email_key === String(o.email).toLowerCase()) || (o.whatsapp && l.phone_key && l.phone_key === String(o.whatsapp).replace(/\D/g, "").slice(-11)) || (o.nome && l.payload && l.payload.nome === o.nome)); });
+      });
+      if (keep.length !== arr.length) wr("cris_leads_" + t, keep);
+    });
+    g.K.forEach(function (k) { delete META[k]; }); wr("cris_adm_meta", META);
+    return Promise.resolve();
+  }
+  function runDelete(g, label) {
+    S.msg = "";
+    var real = g.L.filter(function (x) { return !/^(p_|old_)/.test(x); });
+    var pr = remoteOn
+      ? rdel("leads", "id", real, "id").then(function (n) { if (real.length && !n) throw new Error("perm"); return rdel("events", "vid", g.V, "id"); }).then(function () { return rdel("lead_meta", "person_key", g.K, "person_key"); })
+      : delLocal(g);
+    return pr.then(function () { S.chk = {}; S.msg = label + " excluído(s)."; refresh(); }).catch(function (e) {
+      if (e.message === "auth") { S.err = "Sessão expirada. Entre de novo."; S.token = ""; S.data = null; draw(); return; }
+      S.msg = "Não consegui excluir. Falta liberar a exclusão no banco de dados (rodar o SQL de exclusão no Supabase).";
+      draw();
+    });
+  }
+  function delPeople(ids) { var g = gather(ids); runDelete(g, g.K.length + (g.K.length === 1 ? " pessoa" : " pessoas")); }
+  function delVisitor(v) { runDelete({ L: [], V: [v], K: [] }, "1 visitante"); }
+
   /* Gaveta da pessoa */
   function evText(e) {
     var d = e.data || {}, t = e.type;
@@ -1899,16 +2035,17 @@ body.v-svc .m-progress { display: block; }
     var h = '<div class="a-drawer-bg" id="dbg"></div><aside class="a-drawer" role="dialog" aria-modal="true" aria-label="Detalhes da pessoa"><button class="a-x" id="dx" type="button" aria-label="Fechar">&times;</button>' +
       '<h2>' + esc(p.name || "(sem nome)") + '</h2><span class="a-heat ' + p.heat + '">' + ({ q: "Quente", m: "Morna", f: "Fria" }[p.heat]) + " · " + p.score + '</span>' +
       '<p style="font-size:13px;color:var(--muted)">' + esc([p.email, p.phone, p.insta].filter(Boolean).join(" · ")) + '</p>' + (wa ? '<a class="adm-btn w" style="text-decoration:none;display:inline-block" target="_blank" rel="noopener" href="' + esc(wa) + '">Abrir no WhatsApp</a>' : "") +
-      '<h4>Andamento</h4>' + sel("d-st", m.status || "Novo", STATUS.map(function (s) { return [s, s]; })) + '<textarea id="d-note" placeholder="Anotações da Cris" aria-label="Anotações">' + esc(m.note || "") + '</textarea><button class="adm-btn p" id="d-save" type="button">Salvar</button> <span id="d-ok" style="font-size:12px;color:var(--muted)"></span>';
+      (p.susp ? '<p class="a-susp">Suspeito: ' + esc(p.susp) + '</p>' : "") + '<h4>Andamento</h4>' + sel("d-st", m.status || "Novo", STATUS.map(function (s) { return [s, s]; })) + '<textarea id="d-note" placeholder="Anotações da Cris" aria-label="Anotações">' + esc(m.note || "") + '</textarea><button class="adm-btn p" id="d-save" type="button">Salvar</button> <span id="d-ok" style="font-size:12px;color:var(--muted)"></span><h4>Excluir</h4><p style="font-size:13px;color:var(--muted);margin:0 0 8px">Apaga esta pessoa, as respostas e o histórico de navegação dela. Não dá para desfazer.</p><button class="adm-btn d" id="d-del" type="button">Excluir esta pessoa</button>';
     p.leads.forEach(function (l) {
       var a = l.payload || {}, keys = Object.keys(a).filter(function (k) { return a[k] !== "" && a[k] != null && ["nome", "email", "whatsapp"].indexOf(k) < 0; });
-      h += '<h4>' + esc(KINDS[l.kind] || l.kind) + ' · ' + dt(l.ts) + '</h4><dl class="a-qa">' + keys.map(function (k) { return '<dt>' + esc(TEXTF[k] || CHOICE[k] || k) + '</dt><dd>' + esc(Array.isArray(a[k]) ? a[k].join(", ") : a[k]) + '</dd>'; }).join("") + '</dl>';
+      h += '<h4>' + esc(KINDS[l.kind] || l.kind) + ' · ' + dt(l.ts) + '</h4><dl class="a-qa">' + keys.map(function (k) { return '<dt>' + esc(TEXTF[k] || CHOICE[k] || ({ _flow: "Formulário", parou: "Parou em" })[k] || k) + '</dt><dd>' + esc(k === "_flow" ? (FLOWN[a[k]] || a[k]) : Array.isArray(a[k]) ? a[k].join(", ") : a[k]) + '</dd>'; }).join("") + '</dl>';
     });
     var ev = p.events.filter(function (e) { return e.type !== "scroll"; }).slice(-120);
     h += '<h4>Linha do tempo (' + p.sessions + ' visitas, origem ' + esc(p.src) + ')</h4><ul class="a-tl">' + (ev.length ? ev.map(function (e) { return '<li class="' + (["form_submit", "wa_click", "cta_click"].indexOf(e.type) >= 0 ? "k" : "") + '"><time>' + dt(e.ts) + '</time>' + esc(evText(e)) + '</li>'; }).join("") : '<li>Sem eventos de navegação (cadastro feito antes do rastreamento).</li>') + '</ul></aside>';
     var box = document.getElementById("adm-drawer") || document.createElement("div"); box.id = "adm-drawer"; box.innerHTML = h; root.appendChild(box);
     function close() { box.remove(); }
     box.querySelector("#dx").onclick = close; box.querySelector("#dbg").onclick = close; box.querySelector("#dx").focus();
+    arm(box.querySelector("#d-del"), "Confirmar: excluir de vez", function () { box.remove(); delPeople([id]); });
     box.querySelector("#d-save").onclick = function () {
       META[id] = { status: box.querySelector("#d-st").value, note: box.querySelector("#d-note").value };
       wr("cris_adm_meta", META);
@@ -1930,10 +2067,14 @@ body.v-svc .m-progress { display: block; }
       return;
     }
     if (!S.data) { root.innerHTML = '<p class="adm-empty">' + esc(S.err || "Carregando...") + '</p>'; return; }
-    var pe = S.pe = buildPeople(S.data), tabs = [["geral", "Visão geral"], ["servicos", "Serviços e formulários"], ["pessoas", "Pessoas"], ["palavras", "Palavras e respostas"], ["ajustes", "Ajustes"]];
-    var body = S.tab === "geral" ? vGeral(S.data, pe) : S.tab === "servicos" ? vServicos(S.data, pe) : S.tab === "pessoas" ? vPessoas(S.data, pe) : S.tab === "palavras" ? vPalavras(S.data, pe) : vAjustes();
-    root.innerHTML = '<div class="adm-top"><div><h1>Painel</h1><p class="sub">Quem visita, o que clica e quem vira contato.</p></div><div class="adm-bar">' + sel("f-per", S.period, [["1", "Hoje"], ["7", "7 dias"], ["30", "30 dias"], ["90", "90 dias"], ["all", "Tudo"]]) + '<button class="adm-btn" id="rf" type="button">Atualizar</button>' + (remoteOn ? '<button class="adm-btn" id="out2" type="button">Sair</button>' : '') + '</div></div>' +
-      (remoteOn ? "" : '<div class="adm-mode"><b>Modo local.</b> Você está vendo só os dados deste navegador. Depois de conectar o banco de dados, aqui aparecem todos os visitantes e o acesso passa a pedir login.</div>') +
+    var all = S.peAll = buildPeople(S.data), sp = {}, sv = {}; S.nSusp = 0;
+    all.people.forEach(function (p) { if (p.susp) { S.nSusp++; p.leads.forEach(function (l) { sp[l.id] = 1; }); p.vids.forEach(function (v) { sv[v] = 1; }); } });
+    var keepS = S.fSusp === "only", dd = S.data;
+    if (S.fSusp !== "all") dd = { events: S.data.events.filter(function (e) { return !!sv[e.vid] === keepS; }), leads: S.data.leads.filter(function (l) { return !!sp[l.id] === keepS; }), meta: S.data.meta };
+    var pe = S.pe = buildPeople(dd), tabs = [["geral", "Visão geral"], ["servicos", "Serviços e formulários"], ["pessoas", "Pessoas"], ["palavras", "Palavras e respostas"], ["ajustes", "Ajustes"]];
+    var body = S.tab === "geral" ? vGeral(dd, pe) : S.tab === "servicos" ? vServicos(dd, pe) : S.tab === "pessoas" ? vPessoas(dd, pe) : S.tab === "palavras" ? vPalavras(dd, pe) : vAjustes();
+    root.innerHTML = '<div class="adm-top"><div><h1>Painel</h1><p class="sub">Quem visita, o que clica e quem vira contato.</p></div><div class="adm-bar">' + sel("f-per", S.period, [["1", "Hoje"], ["7", "7 dias"], ["30", "30 dias"], ["90", "90 dias"], ["all", "Tudo"]]) + sel("f-susp", S.fSusp, [["hide", "Ocultar suspeitos" + (S.nSusp ? " (" + S.nSusp + ")" : "")], ["only", "Só suspeitos"], ["all", "Mostrar tudo"]]) + '<button class="adm-btn" id="rf" type="button">Atualizar</button>' + (remoteOn ? '<button class="adm-btn" id="out2" type="button">Sair</button>' : '') + '</div></div>' +
+      (S.msg ? '<div class="adm-msg" role="status">' + esc(S.msg) + '</div>' : "") + (remoteOn ? "" : '<div class="adm-mode"><b>Modo local.</b> Você está vendo só os dados deste navegador. Depois de conectar o banco de dados, aqui aparecem todos os visitantes e o acesso passa a pedir login.</div>') +
       '<div class="adm-tabs" role="tablist">' + tabs.map(function (t) { return '<button role="tab" type="button" data-t="' + t[0] + '" aria-selected="' + (S.tab === t[0]) + '">' + t[1] + '</button>'; }).join("") + '</div>' + body;
     bind();
   }
@@ -1951,11 +2092,17 @@ body.v-svc .m-progress { display: block; }
     function on(id, ev, fn) { var n = document.getElementById(id); if (n) n.addEventListener(ev, fn); }
     on("f-per", "change", function (e) { S.period = e.target.value; draw(); });
     on("rf", "click", refresh);
-    root.querySelectorAll("[data-t]").forEach(function (b) { b.onclick = function () { S.tab = b.getAttribute("data-t"); draw(); }; });
+    root.querySelectorAll("[data-t]").forEach(function (b) { b.onclick = function () { S.tab = b.getAttribute("data-t"); S.msg = ""; draw(); }; });
     on("f-q", "input", function (e) { S.q = e.target.value; var pos = e.target.selectionStart; draw(); var n = document.getElementById("f-q"); n.focus(); n.setSelectionRange(pos, pos); });
     on("f-kind", "change", function (e) { S.fKind = e.target.value; draw(); }); on("f-heat", "change", function (e) { S.fHeat = e.target.value; draw(); }); on("f-st", "change", function (e) { S.fStatus = e.target.value; draw(); });
     on("f-wf", "change", function (e) { S.wf = e.target.value; S.word = ""; draw(); });
     on("csv", "click", csv);
+    on("f-susp", "change", function (e) { S.fSusp = e.target.value; S.chk = {}; draw(); });
+    root.querySelectorAll("[data-ck]").forEach(function (c) { c.onclick = function (e) { e.stopPropagation(); }; c.onchange = function () { S.chk[c.getAttribute("data-ck")] = c.checked; draw(); }; });
+    on("ck-all", "change", function (e) { filteredPeople(S.pe).forEach(function (p) { S.chk[p.id] = e.target.checked; }); draw(); });
+    arm(document.getElementById("del-sel"), "Confirmar: excluir de vez", function () { delPeople(Object.keys(S.chk).filter(function (k) { return S.chk[k]; })); });
+    arm(document.getElementById("del-susp"), "Confirmar: excluir suspeitos", function () { delPeople(S.peAll.people.filter(function (p) { return p.susp; }).map(function (p) { return p.id; })); });
+    root.querySelectorAll("[data-dv]").forEach(function (b) { arm(b, "Confirmar", function () { delVisitor(b.getAttribute("data-dv")); }); });
     root.querySelectorAll("tr[data-p]").forEach(function (r) { r.onclick = function () { openPerson(r.getAttribute("data-p")); }; r.onkeydown = function (e) { if (e.key === "Enter") openPerson(r.getAttribute("data-p")); }; });
     root.querySelectorAll("[data-w]").forEach(function (b) { b.onclick = function () { S.word = S.word === b.getAttribute("data-w") ? "" : b.getAttribute("data-w"); draw(); }; });
     root.querySelectorAll(".a-bar[data-k]").forEach(function (b) { b.onclick = function () { S.word = b.getAttribute("data-k"); draw(); }; });

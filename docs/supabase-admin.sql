@@ -64,3 +64,8 @@ grant select on public.events to authenticated;
 grant select on public.leads to authenticated;
 grant select, insert, update, delete on public.lead_meta to authenticated;
 grant execute on function public.is_admin() to authenticated;
+
+-- Exclusão pelo painel (só admins). Rodar uma vez.
+create policy "admin exclui eventos" on public.events for delete to authenticated using (public.is_admin());
+create policy "admin exclui leads" on public.leads for delete to authenticated using (public.is_admin());
+grant delete on public.events, public.leads to authenticated;
