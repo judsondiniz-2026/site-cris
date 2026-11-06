@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Mapa do site Cris Reis</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: árvore recolhível, uma página por bloco; a cor diz o tipo de cada elemento */
+:root{
+  --bg:#F6F3EE; --fg:#3A322B; --muted:#6F6860; --line:#CFC6B9; --card:#FFFFFF;
+  --pg-bg:#4B4037; --pg-fg:#FFFFFF; --pg-bd:#4B4037;
+  --se-bg:#E6DFD3; --se-fg:#4B4037; --se-bd:#CFC4B3;
+  --bf-bg:#2F5D8A; --bf-fg:#FFFFFF; --bf-bd:#2F5D8A;
+  --fo-bg:#DCE8F4; --fo-fg:#1F3F5E; --fo-bd:#2F5D8A;
+  --bw-bg:#2E7D4F; --bw-fg:#FFFFFF; --bw-bd:#2E7D4F;
+  --bn-bg:#77716A; --bn-fg:#FFFFFF; --bn-bd:#77716A;
+  --ex-bg:transparent; --ex-fg:#4B4037; --ex-bd:#8E8881;
+  --br-bg:transparent; --br-fg:#6F6860; --br-bd:#8E8881;
+  --pa-bg:#3C4650; --pa-fg:#FFFFFF; --pa-bd:#3C4650;
+  --font-title:"Cormorant Garamond",Georgia,serif; --font-body:"Public Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1D1916; --fg:#EFE9DF; --muted:#A79F95; --line:#463E37; --card:#26211D;
+  --pg-bg:#E6DFD3; --pg-fg:#2B2420; --pg-bd:#E6DFD3;
+  --se-bg:#3A332D; --se-fg:#E6DFD3; --se-bd:#51483F;
+  --bf-bg:#6C9BCB; --bf-fg:#0F1C2B; --bf-bd:#6C9BCB;
+  --fo-bg:#1F2E3F; --fo-fg:#CFE1F4; --fo-bd:#6C9BCB;
+  --bw-bg:#4FAE78; --bw-fg:#0C2418; --bw-bd:#4FAE78;
+  --bn-bg:#A59E96; --bn-fg:#1D1916; --bn-bd:#A59E96;
+  --ex-fg:#E6DFD3; --ex-bd:#A59E96; --br-fg:#A79F95; --br-bd:#6F6860;
+  --pa-bg:#8795A3; --pa-fg:#101418; --pa-bd:#8795A3; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1D1916; --fg:#EFE9DF; --muted:#A79F95; --line:#463E37; --card:#26211D;
+  --pg-bg:#E6DFD3; --pg-fg:#2B2420; --pg-bd:#E6DFD3;
+  --se-bg:#3A332D; --se-fg:#E6DFD3; --se-bd:#51483F;
+  --bf-bg:#6C9BCB; --bf-fg:#0F1C2B; --bf-bd:#6C9BCB;
+  --fo-bg:#1F2E3F; --fo-fg:#CFE1F4; --fo-bd:#6C9BCB;
+  --bw-bg:#4FAE78; --bw-fg:#0C2418; --bw-bd:#4FAE78;
+  --bn-bg:#A59E96; --bn-fg:#1D1916; --bn-bd:#A59E96;
+  --ex-fg:#E6DFD3; --ex-bd:#A59E96; --br-fg:#A79F95; --br-bd:#6F6860;
+  --pa-bg:#8795A3; --pa-fg:#101418; --pa-bd:#8795A3; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px}
+.wrap{max-width:980px;margin:0 auto}
+h1{font-family:var(--font-title);font-weight:600;font-size:clamp(34px,6vw,52px);line-height:1.05;margin:0 0 6px;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 24px;max-width:62ch}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.lg{font:inherit;font-size:13px;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:6px 12px 6px 8px;cursor:pointer;min-height:36px}
+.lg i{width:18px;height:18px;border-radius:5px;display:block;border:1.5px solid transparent}
+.lg b{font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.lg[aria-pressed=false]{opacity:.45}
+.lg:focus-visible,.tool:focus-visible,summary:focus-visible{outline:2px solid var(--bf-bg);outline-offset:2px}
+.tools{display:flex;gap:8px;margin:14px 0 28px;flex-wrap:wrap;align-items:center}
+.tool{font:inherit;font-size:13px;border:1px solid var(--line);background:none;color:var(--fg);border-radius:8px;padding:7px 14px;cursor:pointer;min-height:36px}
+.hint{font-size:13px;color:var(--muted)}
+.page{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 12px;margin-bottom:16px;min-width:0}
+ul.tree{list-style:none;margin:0;padding:0}
+ul.tree ul{list-style:none;margin:6px 0 0 11px;padding:0 0 0 20px;border-left:1px solid var(--line)}
+li{position:relative;margin:7px 0;min-width:0}
+ul ul>li::before{content:"";position:absolute;left:-20px;top:14px;width:14px;border-top:1px solid var(--line)}
+details>summary{list-style:none;cursor:pointer;display:block}
+details>summary::-webkit-details-marker{display:none}
+.node{display:inline-flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;max-width:100%;border:1.5px solid;border-radius:8px;padding:6px 12px;font-size:14px;line-height:1.35;vertical-align:top}
+.node .n{font-weight:500}
+.node .d{font-size:12.5px;opacity:.82}
+.t-pagina>.node,.t-pagina>details>summary>.node{background:var(--pg-bg);color:var(--pg-fg);border-color:var(--pg-bd);font-family:var(--font-title);font-size:20px;font-weight:600;padding:7px 16px}
+.t-secao>.node,.t-secao>details>summary>.node{background:var(--se-bg);color:var(--se-fg);border-color:var(--se-bd)}
+.t-bform>.node,.t-bform>details>summary>.node{background:var(--bf-bg);color:var(--bf-fg);border-color:var(--bf-bd)}
+.t-form>.node,.t-form>details>summary>.node{background:var(--fo-bg);color:var(--fo-fg);border-color:var(--fo-bd)}
+.t-bwa>.node,.t-bwa>details>summary>.node{background:var(--bw-bg);color:var(--bw-fg);border-color:var(--bw-bd)}
+.t-bnav>.node,.t-bnav>details>summary>.node{background:var(--bn-bg);color:var(--bn-fg);border-color:var(--bn-bd)}
+.t-ext>.node,.t-ext>details>summary>.node{background:var(--ex-bg);color:var(--ex-fg);border-color:var(--ex-bd)}
+.t-breve>.node,.t-breve>details>summary>.node{background:var(--br-bg);color:var(--br-fg);border-color:var(--br-bd);border-style:dashed}
+.t-painel>.node,.t-painel>details>summary>.node{background:var(--pa-bg);color:var(--pa-fg);border-color:var(--pa-bd)}
+.t-item>.node,.t-item>details>summary>.node{border-color:transparent;padding:2px 0;color:var(--fg);font-size:14px}
+.t-item .node .d,.t-item>details>summary>.node .d{color:var(--muted);opacity:1}
+details>summary .node::after{content:"";width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);align-self:center;margin-left:2px;transition:transform .15s}
+details[open]>summary .node::after{transform:rotate(45deg)}
+.t-item>details>summary>.node::after{opacity:.5}
+body[data-dim~="pagina"] .t-pagina>*,body[data-dim~="secao"] .t-secao>.node,body[data-dim~="secao"] .t-secao>details>summary,body[data-dim~="bform"] .t-bform>.node,body[data-dim~="bform"] .t-bform>details>summary,body[data-dim~="form"] .t-form>.node,body[data-dim~="form"] .t-form>details>summary,body[data-dim~="bwa"] .t-bwa>.node,body[data-dim~="bwa"] .t-bwa>details>summary,body[data-dim~="bnav"] .t-bnav>.node,body[data-dim~="bnav"] .t-bnav>details>summary,body[data-dim~="ext"] .t-ext>.node,body[data-dim~="breve"] .t-breve>.node,body[data-dim~="painel"] .t-painel>.node{opacity:.12}
+.arrow{color:var(--muted);font-size:12.5px;margin-left:8px}
+.note{margin-top:28px;font-size:13px;color:var(--muted);max-width:70ch}
+@media (max-width:520px){ul.tree ul{margin-left:6px;padding-left:14px}ul ul>li::before{left:-14px;width:10px}.t-pagina>.node,.t-pagina>details>summary>.node{font-size:18px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>Mapa do site da Cris</h1>
+  <p class="sub">Tudo o que existe em cristiainyreis.com: cada página, o que há dentro dela, cada botão e cada formulário. A cor mostra o tipo. Toque numa cor da legenda para destacar só aquele tipo.</p>
+  <div class="legend" id="legend" role="group" aria-label="Legenda por cor"></div>
+  <div class="tools"><button class="tool" id="open" type="button">Abrir tudo</button><button class="tool" id="close" type="button">Recolher tudo</button><span class="hint" id="count"></span></div>
+  <div id="tree"></div>
+  <p class="note">Quando o site ganhar uma página, botão ou formulário novo, este mapa é atualizado junto. Os formulários abrem em janela de conversa e todo cadastro aparece no painel da Cris.</p>
+</div>
+
+<script>
+var TYPES=[["pagina","Página"],["secao","Seção da página"],["bform","Botão que abre formulário"],["form","Formulário"],["bwa","Botão do WhatsApp"],["bnav","Botão que leva a outra página"],["ext","Link para fora do site"],["breve","Ainda não disponível"],["painel","Painel interno"]];
+function N(t,n,c,d){return{t:t,n:n,c:c||[],d:d||""}}
+function items(a){return a.map(function(x){return N("item",x)})}
+
+var WA_FIXO=N("bwa","Botão fixo do WhatsApp","", "canto da tela, nas páginas de serviço");
+var FORM_DIAG=N("form","Formulário Diagnóstico",[
+  N("item","Contato","","nome, e-mail, WhatsApp, Instagram (opcional)"),
+  N("item","Perfil","","idade, área de atuação, situação do negócio"),
+  N("item","Negócio","","como é hoje, valor do serviço"),
+  N("item","Desafio e objetivo","","maior desafio agora e meta para 6 a 12 meses"),
+  N("bwa","Combinar horário no WhatsApp","","tela final")
+],"11 perguntas");
+var FORM_GUIA=N("form","Formulário Converse comigo",[
+  N("item","Conhece você","","nome, o que faz, área de atuação"),
+  N("item","Entende o negócio","","equipe, momento, principal desafio, o que procura"),
+  N("item","Contato","","WhatsApp e e-mail (opcional)"),
+  N("item","Resultado","","indica o serviço mais adequado e dois outros"),
+  N("bwa","Falar com a Cris sobre isso","","em cada serviço indicado"),
+  N("bwa","Falar com a Cris agora","","tela final")
+],"9 perguntas");
+function formEspera(){return N("form","Formulário Lista de espera",[
+  N("item","Contato","","nome, e-mail, WhatsApp"),
+  N("item","Sobre você","","área ou empresa, mensagem (opcional)"),
+  N("bwa","Falar no WhatsApp","","tela final")
+],"5 perguntas")}
+function servico(nome,etapas,quem){
+  return N("pagina",nome,[
+    N("secao","Topo da página","",""),
+    N("secao","Como funciona",items(etapas),"cartões que abrem ao tocar"),
+    N("secao","Para quem é",items(quem)),
+    N("secao","Perguntas frequentes"),
+    N("secao","Fechamento"),
+    WA_FIXO
+  ].map(function(x,i){
+    if(i===0)x.c=[N("bform","Entrar na lista de espera",[formEspera()])];
+    if(i===4)x.c=[N("bform","Entrar na lista de espera","","abre o mesmo formulário")];
+    return x}),"página de serviço");
+}
+
+var TREE=[
+ N("pagina","Início",[
+  N("secao","Topo",[N("ext","Instagram @cristiainy_mentora","","abre em outra aba")],"foto, nome, Mentora de Negócios"),
+  N("secao","Descubra seu primeiro passo",[N("bform","Converse comigo",[FORM_GUIA])]),
+  N("secao","Mentoria Singular",[N("bnav","Conhecer a mentoria","","leva à página Mentoria Singular")],"cartão de destaque"),
+  N("secao","Seis meses, uma etapa por vez","","seis abas, de Mês 1 a Mês 6"),
+  N("secao","Serviços",[
+    N("item","Individual",[N("bnav","Conhecer a análise","","leva a Análise de Perfil Comportamental")]),
+    N("item","Para a sua empresa",[
+      N("bnav","Conhecer o treinamento","","leva a Treinamento Comercial GIRO, PULSO & PRAC"),
+      N("bnav","Conhecer o treinamento","","leva a Treinamento de Líderes"),
+      N("bnav","Conhecer o treinamento","","leva a Treinamento de Comunicação Assertiva"),
+      N("bnav","Conhecer as palestras","","leva a Palestras")
+    ])
+  ]),
+  N("secao","Seja uma licenciada Esbelt ON",[N("bwa","Quero ser licenciada","","mensagem pronta para a Cris")]),
+  N("secao","Materiais gratuitos",[N("item","Calculadora de Valor",[N("breve","Em breve","","botão desativado")])]),
+  N("secao","Sobre a Cris","","história, formação e atuação")
+ ].filter(Boolean),"página principal"),
+
+ N("pagina","Mentoria Singular",[
+  N("secao","Topo",[N("bnav","Como funciona","","rola até a seção abaixo")]),
+  N("secao","Como funciona",items(["Diagnóstico","Acompanhamento","Imersão e reconstrução"]).concat([N("bform","Agendar sessão de diagnóstico",[FORM_DIAG])]),"cartões que abrem ao tocar"),
+  N("secao","As quatro fases",items(["1. Reconstrução da Base Empresarial","2. Arquitetura de Produtos","3. Alquimia do Atendimento","4. Venda com Propósito"]),"fases que se sobrepõem na rolagem"),
+  N("secao","Para quem é",items(["Agenda cheia","Preço sob pressão","Cliente certo"])),
+  N("secao","Perguntas frequentes","","5 perguntas"),
+  N("secao","Fechamento",[N("bform","Agendar sessão de diagnóstico","","abre o mesmo formulário")]),
+  WA_FIXO
+ ],"página de serviço"),
+
+ servico("Análise de Perfil Comportamental",["Levantamento","Leitura de perfil","Devolutiva"],["Autoconhecimento","Momento de decisão","Resultados"]),
+ servico("Treinamento Comercial GIRO, PULSO & PRAC",["GIRO","PULSO","PRAC"],["Equipes comerciais","B2C e B2B","Novas oportunidades"]),
+ servico("Treinamento de Líderes",["Gestão e liderança","Entender pessoas","Conversas difíceis","PDI e PDE"],["Gestores e líderes","Equipes engajadas","Conversas difíceis"]),
+ servico("Treinamento de Comunicação Assertiva",["Comunicação e rapport","Relações e pedidos","Postura e emoção"],["Equipes","Líderes e colegas","Profissionais"]),
+ servico("Palestras",["Liderança","Comunicação assertiva","Comportamento"],["Empresas","Eventos","Organizadores"]),
+
+ N("pagina","Termos de uso",[N("bnav","Voltar","","leva ao Início")].concat(items(["Sobre esta página","Contratação dos serviços","Propriedade do conteúdo","Responsabilidades","Contato"]).map(function(x){x.t="secao";return x})),"texto legal"),
+ N("pagina","Política de privacidade",[N("bnav","Voltar","","leva ao Início")].concat(items(["Quais dados coletamos","Para que usamos","Como medimos o uso do site","Por quanto tempo guardamos","Seus direitos","Contato"]).map(function(x){x.t="secao";return x})),"texto legal"),
+
+ N("pagina","Rodapé",[N("bnav","Início"),N("bnav","Termos de uso"),N("bnav","Política de privacidade")],"aparece em todas as páginas"),
+
+ N("painel","Painel da Cris (#admin)",[
+   N("item","Entrada com e-mail e senha","","não aparece em nenhum botão do site"),
+   N("item","Visão geral"),N("item","Serviços e formulários"),N("item","Pessoas","","excluir, suspeitos, formulários incompletos"),N("item","Palavras e respostas"),N("item","Ajustes")
+ ],"área restrita")
+];
+
+function cls(n){return "t-"+n.t}
+function html(n){
+  var label='<span class="node"><span class="n">'+esc(n.n)+'</span>'+(n.d?'<span class="d">'+esc(n.d)+'</span>':'')+'</span>';
+  if(!n.c.length)return '<li class="'+cls(n)+'" data-t="'+n.t+'">'+label+'</li>';
+  return '<li class="'+cls(n)+'" data-t="'+n.t+'"><details open><summary>'+label+'</summary><ul>'+n.c.map(html).join("")+'</ul></details></li>';
+}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+var cnt={};
+(function walk(a){a.forEach(function(n){cnt[n.t]=(cnt[n.t]||0)+1;walk(n.c)})})(TREE);
+document.getElementById("tree").innerHTML=TREE.map(function(p){return '<div class="page"><ul class="tree">'+html(p)+'</ul></div>'}).join("");
+var lg=document.getElementById("legend"),sel=null;
+TYPES.forEach(function(t){
+  if(t[0]==="item")return;
+  var b=document.createElement("button");b.type="button";b.className="lg";b.setAttribute("aria-pressed","true");
+  b.innerHTML='<i style="background:var(--'+({pagina:"pg",secao:"se",bform:"bf",form:"fo",bwa:"bw",bnav:"bn",ext:"ex",breve:"br",painel:"pa"})[t[0]]+'-bg);border-color:var(--'+({pagina:"pg",secao:"se",bform:"bf",form:"fo",bwa:"bw",bnav:"bn",ext:"ex",breve:"br",painel:"pa"})[t[0]]+'-bd);'+(t[0]==="breve"?"border-style:dashed":"")+'"></i>'+t[1]+' <b>'+(cnt[t[0]]||0)+'</b>';
+  b.onclick=function(){
+    sel=(sel===t[0])?null:t[0];
+    document.querySelectorAll(".lg").forEach(function(o){o.setAttribute("aria-pressed",String(!sel||o===b))});
+    var d=[];TYPES.forEach(function(x){if(sel&&x[0]!==sel)d.push(x[0])});
+    document.body.setAttribute("data-dim",d.join(" "));
+  };
+  lg.appendChild(b);
+});
+document.getElementById("open").onclick=function(){document.querySelectorAll("details").forEach(function(d){d.open=true})};
+document.getElementById("close").onclick=function(){document.querySelectorAll("details").forEach(function(d,i){d.open=false});document.querySelectorAll(".page > ul > li > details").forEach(function(d){d.open=true})};
+document.getElementById("count").textContent=(cnt.pagina||0)+" páginas, "+((cnt.bform||0)+(cnt.bnav||0)+(cnt.bwa||0)+(cnt.breve||0))+" botões, "+(cnt.form||0)+" formulários";
+</script>
+
+</body>
+</html>
