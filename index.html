@@ -521,6 +521,80 @@ body.v-svc .m-progress { display: block; }
 @media (max-width:760px){.admin{padding-block:24px 56px}.a-fn{grid-template-columns:1fr}.a-fn em{text-align:left}.adm-grid{grid-template-columns:1fr}.a-bar{grid-template-columns:minmax(80px,45%) 1fr auto}.a-hm{gap:1px}.adm-top{align-items:flex-start}}
 .admin .adm-card{overflow:hidden}
 .admin .adm-grid>*{min-width:0}
+
+/* Calculadora de Valor Hora */
+.cv-hero { padding-block: 72px 88px; }
+.cv-hero .back { margin-bottom: 40px; }
+.cv-hero h1 { font-size: clamp(46px, 9vw, 92px); max-width: 14ch; }
+.cv-hero .sub { margin-top: 24px; max-width: 44ch; color: var(--muted); font-size: 19px; line-height: 1.6; }
+.cv-promise { margin-top: 28px; max-width: 48ch; border-left: 2px solid var(--line-strong); padding: 4px 0 4px 20px; color: var(--muted); font-size: 16px; }
+.cv-promise strong { color: var(--fg); }
+.cv-form { padding-block: 88px; }
+.cv-head { max-width: 640px; }
+.cv-head h2 { font-size: clamp(38px, 6vw, 60px); }
+.cv-head p { margin-top: 18px; color: var(--muted); font-size: 17px; }
+.cv-card { margin-top: 44px; background: var(--elev); border: 1px solid var(--line); border-radius: 20px; padding: 44px; box-shadow: var(--shadow); }
+.cv-sec { padding-bottom: 40px; margin-bottom: 40px; border-bottom: 1px solid var(--line); }
+.cv-sec:last-of-type { border-bottom: 0; margin-bottom: 0; padding-bottom: 0; }
+.cv-sec h3 { display: flex; align-items: center; gap: 14px; font-size: 27px; margin-bottom: 26px; }
+.cv-sec h3 span { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--bg); font-family: var(--font-body); font-size: 12px; font-weight: 500; display: grid; place-items: center; letter-spacing: .02em; }
+.cv-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.cv-f { min-width: 0; }
+.cv-f label { display: block; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; font-weight: 400; }
+.cv-f input, .cv-f select { width: 100%; min-height: 52px; padding: 12px 16px; background: var(--areia-100); border: 1px solid var(--line); border-radius: 14px; color: var(--fg); font-family: var(--font-body); font-size: 16px; font-weight: 300; -webkit-appearance: none; appearance: none; }
+.cv-f select { padding-right: 44px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%238e8881' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 18px center; }
+.cv-f input:focus, .cv-f select:focus { outline: none; border-color: var(--line-strong); background-color: #ffffff; }
+.cv-f input:focus-visible, .cv-f select:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.cv-f .hint { display: block; margin-top: 8px; font-size: 13px; color: var(--muted); font-style: italic; }
+.cv-money { position: relative; }
+.cv-money span { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--muted); pointer-events: none; }
+.cv-money input { padding-left: 44px; }
+.cv-go { margin-top: 40px; width: 100%; }
+.cv-err { margin-top: 14px; color: #8a2d22; font-size: 14px; text-align: center; }
+.cv-res { padding-block: 88px; }
+.cv-res .eyebrow { font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); font-weight: 400; }
+.cv-res h2 { margin-top: 16px; font-size: clamp(34px, 6vw, 56px); max-width: 20ch; }
+.cv-big { margin-top: 20px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px 18px; }
+.cv-big b { font-family: var(--font-title); font-weight: 500; font-size: clamp(88px, 20vw, 210px); line-height: .88; letter-spacing: -.03em; background: var(--txtgrad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; padding-right: .06em; }
+.cv-big span { font-family: var(--font-title); font-style: italic; font-size: clamp(24px, 4vw, 36px); color: var(--muted); }
+.cv-verdict { margin-top: 22px; max-width: 60ch; font-size: 18px; line-height: 1.65; color: var(--fg); }
+.cv-cards { margin-top: 44px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.cv-cards article { background: var(--elev); border: 1px solid var(--line); border-radius: 18px; padding: 24px 22px; min-width: 0; }
+.cv-cards .l { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.cv-cards .v { margin-top: 12px; font-family: var(--font-title); font-weight: 500; font-size: clamp(30px, 4vw, 40px); line-height: 1; overflow-wrap: anywhere; }
+.cv-cards .n { margin-top: 10px; font-size: 14px; color: var(--muted); }
+.cv-block { margin-top: 56px; }
+.cv-block h3 { font-size: clamp(28px, 4vw, 36px); }
+.cv-block > p { margin-top: 14px; max-width: 62ch; color: var(--muted); font-size: 17px; }
+.cv-gap { margin-top: 24px; display: grid; gap: 14px; max-width: 640px; }
+.cv-bar { display: grid; gap: 6px; }
+.cv-bar .t { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.cv-bar .t b { font-weight: 500; }
+.cv-bar .tr { height: 10px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.cv-bar .tr i { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--accent); transition: width 1.3s var(--ease); }
+.cv-bar.alt .tr i { background: var(--line-strong); }
+.cv-said { margin-top: 24px; border-left: 2px solid var(--line-strong); padding: 6px 0 6px 20px; max-width: 62ch; font-family: var(--font-title); font-style: italic; font-size: clamp(22px, 3vw, 28px); line-height: 1.3; overflow-wrap: anywhere; }
+.cv-ins { margin-top: 22px; display: grid; gap: 14px; max-width: 62ch; }
+.cv-ins p { color: var(--fg); font-size: 17px; }
+.cv-lev { margin-top: 24px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.cv-lev article { border-top: 1px solid var(--line-strong); padding-top: 16px; min-width: 0; }
+.cv-lev .k { font-family: var(--font-title); font-weight: 600; font-size: 24px; line-height: 1.1; }
+.cv-lev p { margin-top: 10px; color: var(--muted); font-size: 15px; }
+.cv-cta { margin-top: 64px; padding: 40px; border: 1px solid var(--line-strong); border-radius: 20px; background: var(--elev); }
+.cv-cta h3 { font-size: clamp(30px, 4.4vw, 42px); max-width: 22ch; }
+.cv-cta p { margin-top: 14px; max-width: 56ch; color: var(--muted); font-size: 17px; }
+.cv-cta .btn-row { margin-top: 28px; }
+.cv-redo { margin-top: 22px; background: none; border: 0; padding: 10px 0; color: var(--muted); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
+.cv-redo:hover { color: var(--fg); }
+.cv-in { opacity: 0; transform: translateY(22px); animation: cv-up .8s var(--ease) forwards; animation-delay: calc(var(--i, 0) * 140ms); }
+@keyframes cv-up { to { opacity: 1; transform: none; } }
+@media (max-width: 760px) {
+  .cv-hero, .cv-form, .cv-res { padding-block: 64px; }
+  .cv-card { padding: 26px 20px; }
+  .cv-grid, .cv-cards, .cv-lev { grid-template-columns: minmax(0, 1fr); }
+  .cv-cta { padding: 28px 20px; }
+}
+@media (prefers-reduced-motion: reduce) { .cv-in { animation: none; opacity: 1; transform: none; } .cv-bar .tr i { transition: none; } }
 </style>
 </head>
 <body>
@@ -653,7 +727,7 @@ body.v-svc .m-progress { display: block; }
           <h3>Calculadora de Valor</h3>
           <p>Para olhar para o seu serviço com números.</p>
         </div>
-        <button class="btn" type="button" disabled aria-disabled="true">Em breve</button>
+        <button class="btn" type="button" data-go="calculadora-de-valor-hora">Abrir calculadora</button>
       </div>
     </div>
   </section>
@@ -779,6 +853,74 @@ body.v-svc .m-progress { display: block; }
 
 </div>
 
+<!-- ===================== CALCULADORA DE VALOR HORA ===================== -->
+<div data-view="calculadora-de-valor-hora" hidden>
+  <header class="band t-preto cv-hero">
+    <div class="wrap">
+      <a class="back" href="#home" data-go="home">&larr; Voltar</a>
+      <h1>Calculadora de <em>Valor</em> de Hora</h1>
+      <p class="sub">Descubra em poucos minutos quanto você deveria cobrar de verdade pelo seu trabalho.</p>
+      <p class="cv-promise">Desenvolvida para profissionais que vendem o próprio tempo e já sabem que cobram menos do que merecem, mas precisam do <strong>número certo</strong> para parar de chutar.</p>
+      <div class="btn-row"><button class="btn" type="button" data-scroll="cv-calc">Calcular agora</button></div>
+    </div>
+  </header>
+
+  <section class="band t-preto" style="padding-top:0">
+    <div class="wrap about">
+      <div class="about-photo"><div class="ph"><img src="img/cris-calculadora.jpg" width="900" height="1125" alt="Cristiainy Reis sentada, olhando para o lado" loading="lazy"></div></div>
+      <div>
+        <h2>Cristiainy Reis</h2>
+        <p class="role">Mentora de negócios, analista comportamental e treinadora</p>
+        <p class="bio">Mentora de negócios, analista comportamental e treinadora de líderes e equipes. Há anos ajuda profissionais e empreendedores a estruturar seus negócios, valorizar o que entregam e vender com estratégia. Acredita que um negócio de sucesso vai muito além do CNPJ: por trás de cada empresa existe uma história, um sonho e uma pessoa que merece ser enxergada.</p>
+        <p class="fam">Mãe de quatro, casada, cristã e apaixonada por pessoas e processos.</p>
+        <h3>Formação e atuação</h3>
+        <ul class="ticks">
+          <li>Mentora de negócios, criadora da Mentoria Singular e do método comercial GIRO, PULSO &amp; PRAC</li>
+          <li>Sócia do programa de licenciamento da Esbelt ON</li>
+          <li>Analista comportamental</li>
+          <li>Coach de alta performance</li>
+          <li>Programadora neurolinguística (PNL)</li>
+          <li>Treinadora de líderes e equipes</li>
+          <li>Pós-graduações em Neurovendas, Marketing e Vendas, e Gestão Comercial (em conclusão)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="band t-bege cv-form" id="cv-calc">
+    <div class="wrap">
+      <div class="cv-head">
+        <h2>Seu número <em>real</em> em 5 minutos</h2>
+        <p>Preencha os campos abaixo e descubra quanto você deveria cobrar por hora com base no que entrega, nos seus custos reais e na sustentabilidade do seu negócio.</p>
+      </div>
+      <div class="cv-card">
+        <div class="cv-sec">
+          <h3><span>01</span>Seus custos mensais</h3>
+          <div class="cv-grid">
+            <div class="cv-f"><label for="cv-aluguel">Aluguel / espaço</label><div class="cv-money"><span>R$</span><input type="number" id="cv-aluguel" inputmode="decimal" min="0" step="0.01" placeholder="0,00"></div></div><div class="cv-f"><label for="cv-materiais">Materiais e insumos</label><div class="cv-money"><span>R$</span><input type="number" id="cv-materiais" inputmode="decimal" min="0" step="0.01" placeholder="0,00"></div></div><div class="cv-f"><label for="cv-equip">Equipamentos / manutenção</label><div class="cv-money"><span>R$</span><input type="number" id="cv-equip" inputmode="decimal" min="0" step="0.01" placeholder="0,00"></div></div><div class="cv-f"><label for="cv-mkt">Marketing / divulgação</label><div class="cv-money"><span>R$</span><input type="number" id="cv-mkt" inputmode="decimal" min="0" step="0.01" placeholder="0,00"></div></div><div class="cv-f"><label for="cv-outros">Outros custos fixos</label><div class="cv-money"><span>R$</span><input type="number" id="cv-outros" inputmode="decimal" min="0" step="0.01" placeholder="0,00"></div></div><div class="cv-f"><label for="cv-prolabore">Pró-labore desejado</label><div class="cv-money"><span>R$</span><input type="number" id="cv-prolabore" inputmode="decimal" min="0" step="0.01" placeholder="0,00"></div><span class="hint">Quanto você quer retirar por mês para você</span></div>
+          </div>
+        </div>
+        <div class="cv-sec">
+          <h3><span>02</span>Sua capacidade de trabalho</h3>
+          <div class="cv-grid">
+            <div class="cv-f"><label for="cv-dias">Dias trabalhados por semana</label><select id="cv-dias"><option value="">Selecione</option><option value="3">3 dias</option><option value="4">4 dias</option><option value="5">5 dias</option><option value="6">6 dias</option></select></div><div class="cv-f"><label for="cv-horas">Horas de atendimento por dia</label><select id="cv-horas"><option value="">Selecione</option><option value="4">4 horas</option><option value="5">5 horas</option><option value="6">6 horas</option><option value="7">7 horas</option><option value="8">8 horas</option></select></div><div class="cv-f"><label for="cv-ocup">Taxa de ocupação real</label><select id="cv-ocup"><option value="">Selecione</option><option value="0.6">60% (começo de posicionamento)</option><option value="0.7">70% (agenda parcialmente cheia)</option><option value="0.8">80% (agenda bem cheia)</option><option value="0.9">90% (agenda quase lotada)</option></select><span class="hint">A porcentagem do tempo que você realmente está atendendo</span></div><div class="cv-f"><label for="cv-margem">Margem de lucro desejada</label><select id="cv-margem"><option value="">Selecione</option><option value="0.15">15% (mínimo sustentável)</option><option value="0.20">20% (mercado médio)</option><option value="0.30">30% (posicionamento premium)</option><option value="0.40">40% (alto valor percebido)</option></select></div>
+          </div>
+        </div>
+        <div class="cv-sec">
+          <h3><span>03</span>Seu posicionamento</h3>
+          <div class="cv-grid">
+            <div class="cv-f"><label for="cv-exp">Anos de experiência</label><select id="cv-exp"><option value="">Selecione</option><option value="1">Menos de 2 anos</option><option value="1.05">2 a 4 anos</option><option value="1.10">5 a 7 anos</option><option value="1.15">8 a 12 anos</option><option value="1.20">Mais de 12 anos</option></select></div><div class="cv-f"><label for="cv-espec">Nível de especialização</label><select id="cv-espec"><option value="">Selecione</option><option value="1">Generalista (vários serviços)</option><option value="1.08">Especialista em área específica</option><option value="1.15">Especialista reconhecida no mercado</option><option value="1.25">Referência na cidade ou no nicho</option></select></div><div class="cv-f"><label for="cv-cobra">Quanto você cobra hoje por hora (opcional)</label><div class="cv-money"><span>R$</span><input type="number" id="cv-cobra" inputmode="decimal" min="0" step="0.01" placeholder="0,00"></div><span class="hint">Se cobra por sessão, use o valor de uma hora de atendimento. Serve para mostrar a diferença para o seu número.</span></div>
+          </div>
+        </div>
+        <button class="btn cv-go" id="cv-go" type="button">Calcular meu valor de hora</button>
+        <p class="cv-err" id="cv-err" role="alert" hidden></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band t-preto cv-res" id="cv-result" hidden aria-live="polite"><div class="wrap" id="cv-result-in"></div></section>
+</div>
+
 <!-- ===================== PÁGINAS DE SERVIÇO COM LISTA DE ESPERA (montadas pelo script) ===================== -->
 <div data-view="espera" id="espera-page" hidden></div>
 
@@ -815,7 +957,7 @@ body.v-svc .m-progress { display: block; }
     <div class="sample-row"><span class="sample-tag">Texto de exemplo</span></div>
     <h1>Política de privacidade</h1>
     <h2>Quais dados coletamos</h2>
-    <p>Nome, e-mail, WhatsApp e as respostas que você informa na conversa guiada, no cadastro de materiais gratuitos, no formulário da sessão de diagnóstico (como idade, área de atuação, descrição do negócio, desafios e objetivos) ou na lista de espera.</p>
+    <p>Nome, e-mail, WhatsApp e as respostas que você informa na conversa guiada, no cadastro de materiais gratuitos, no formulário da sessão de diagnóstico (como idade, área de atuação, descrição do negócio, desafios e objetivos), na lista de espera ou na Calculadora de Valor Hora (como os valores de custo e capacidade de trabalho, o que você cobra hoje e as observações que escrever).</p>
     <h2>Para que usamos</h2>
     <p>Para responder ao seu contato, indicar o serviço mais adequado e enviar o material solicitado. Não vendemos nem cedemos seus dados a terceiros para publicidade.</p>
     <h2>Como medimos o uso do site</h2>
@@ -1185,7 +1327,8 @@ body.v-svc .m-progress { display: block; }
   }
 
   /* ---------- Navegação entre visões ---------- */
-  var FIXED = ["home", "termos-de-uso", "politica-de-privacidade", "admin"];
+  var CALC = "calculadora-de-valor-hora";
+  var FIXED = ["home", "termos-de-uso", "politica-de-privacidade", "admin", CALC];
   document.addEventListener("click", function (e) {
     var t = e.target.closest("[data-scroll]"); if (!t) return;
     var d = document.getElementById(t.getAttribute("data-scroll")); if (d) d.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1195,16 +1338,16 @@ body.v-svc .m-progress { display: block; }
     try { CT.view(v); } catch (e) {}
     if (v === "mentoria-singular") { active = "mentoria"; title = "Mentoria Singular"; }
     else if (SLUGS[v]) { renderEspera(SLUGS[v]); active = "espera"; title = ESPERA[SLUGS[v]].title; }
-    else if (FIXED.indexOf(v) >= 0) active = v;
+    else if (FIXED.indexOf(v) >= 0) { active = v; if (v === CALC) title = "Calculadora de Valor Hora"; }
     document.querySelectorAll("[data-view]").forEach(function (n) { n.hidden = n.getAttribute("data-view") !== active; });
-    var svc = active === "mentoria" || active === "espera";
+    var svc = active === "mentoria" || active === "espera" || active === CALC;
     document.body.classList.toggle("v-svc", svc);
     if (active === "admin") { try { window.dispatchEvent(new Event("cris:admin")); } catch (e) {} }
     try { window.scrollTo(0, 0); } catch (e) {}
     if (svc) {
       var fab = document.getElementById("wa-fab");
       if (fab) fab.href = waLink("Oi, Cris! Cheguei {onde}, estou na página " + title + " e quero falar pelo WhatsApp.");
-      animateView(document.querySelector('[data-view="' + active + '"]'));
+      if (active !== CALC) animateView(document.querySelector('[data-view="' + active + '"]'));
     }
   }
   function go(v) {
@@ -1278,6 +1421,12 @@ body.v-svc .m-progress { display: block; }
     { field: "whatsapp", type: "text", text: "E o seu WhatsApp, com DDD?", example: "(14) 99999-9999",
       validate: function (v) { return v.replace(/\D/g, "").length < 10 ? "Não consegui ler esse número. Informe com DDD, por exemplo (14) 99999-9999." : ""; } }
   ];
+  var Q_CALC = [
+    { field: "nome", type: "text", text: "Oi! O seu cálculo está pronto. Antes de mostrar o resultado, como posso te chamar?", example: "Seu nome" },
+    { field: "email", type: "text", text: function (a) { return "Prazer, " + first(a.nome) + "! Qual o seu e-mail? O seu cálculo fica registrado nele."; }, example: "voce@email.com",
+      validate: function (v) { return EMAIL_RE.test(v) ? "" : "Esse e-mail parece incompleto. Confira e tente de novo."; } },
+    { field: "obs", type: "text", long: true, optional: true, text: "Quer me contar algo sobre a sua hora ou o que gostaria de saber sobre ela? Pode ser uma dúvida, uma dificuldade ou o que está te incomodando hoje. Pode pular.", example: "Escreva com suas palavras" }
+  ];
   var Q_DIAGNOSTICO = [
     { field: "nome", type: "text", text: "Oi! Vou reservar a sua sessão de diagnóstico. Primeiro, como posso te chamar?", example: "Seu nome" },
     { field: "email", type: "text", text: function (a) { return "Prazer, " + first(a.nome) + "! Qual o seu e-mail?"; }, example: "voce@email.com",
@@ -1307,6 +1456,7 @@ body.v-svc .m-progress { display: block; }
   var FLOWS = {
     guia: { questions: Q_GUIA, done: finishGuia },
     material: { questions: Q_MATERIAL, done: finishMaterial },
+    calculadora: { questions: Q_CALC, done: finishCalc },
     diagnostico: { questions: Q_DIAGNOSTICO, done: finishDiagnostico },
     espera: { questions: Q_ESPERA, done: finishEspera }
   };
@@ -1551,6 +1701,140 @@ body.v-svc .m-progress { display: block; }
     toBottom();
   }
 
+
+  /* ---------- Calculadora de Valor Hora ---------- */
+  var cvShow = false, cvData = null, cvLast = null;
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function money(n) { return Math.round(n).toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }); }
+  function cvNum(id) { var v = parseFloat(document.getElementById(id).value); return isFinite(v) && v > 0 ? v : 0; }
+  function cvSel(id) { var n = document.getElementById(id), o = n.options[n.selectedIndex]; return { v: parseFloat(n.value) || 0, t: o && n.value ? o.text : "" }; }
+  function cvCompute(i) {
+    var custo = i.aluguel + i.materiais + i.equip + i.mkt + i.outros + i.prolabore;
+    function hora(c, oc) { return Math.ceil(c / (i.dias * i.horas * 4.33 * oc) / (1 - i.margem) * i.exp * i.espec / 5) * 5; }
+    var horasMes = i.dias * i.horas * 4.33 * i.ocup;
+    var h = hora(custo, i.ocup);
+    return { custo: custo, horasMes: horasMes, hora: h, fat: h * horasMes,
+      hOcup: hora(custo, Math.min(1, i.ocup + 0.1)), hCusto: hora(custo * 0.9, i.ocup) };
+  }
+  function cvRead() {
+    var i = { aluguel: cvNum("cv-aluguel"), materiais: cvNum("cv-materiais"), equip: cvNum("cv-equip"), mkt: cvNum("cv-mkt"), outros: cvNum("cv-outros"), prolabore: cvNum("cv-prolabore"),
+      dias: cvSel("cv-dias").v, horas: cvSel("cv-horas").v, ocup: cvSel("cv-ocup").v, margem: cvSel("cv-margem").v, exp: cvSel("cv-exp").v, espec: cvSel("cv-espec").v, cobra: cvNum("cv-cobra") };
+    i.expT = cvSel("cv-exp").t; i.especT = cvSel("cv-espec").t;
+    return i;
+  }
+  function cvErr(msg) { var e = document.getElementById("cv-err"); e.textContent = msg || ""; e.hidden = !msg; }
+  function cvStart(btn) {
+    var i = cvRead();
+    if (!i.dias || !i.horas || !i.ocup || !i.margem || !i.exp || !i.espec) { cvErr("Preencha dias, horas, ocupação, margem, experiência e especialização para calcular."); return; }
+    if (!(i.aluguel + i.materiais + i.equip + i.mkt + i.outros + i.prolabore)) { cvErr("Informe ao menos um custo ou o pró-labore que você deseja."); return; }
+    cvErr("");
+    cvData = { i: i, r: cvCompute(i) };
+    try { CT.track("cta_click", { chat: "calculadora", label: "Calcular meu valor de hora" }); } catch (e) {}
+    state = { flow: null, i: 0, answers: {}, started: false };
+    openChat("calculadora", btn);
+  }
+  var CV_THEMES = [
+    [/desconto|barato|negociar|regatea|pechinch|caro demais|acham caro|acha caro/, "Pedido de desconto quase nunca é só sobre dinheiro. Costuma aparecer quando o cliente ainda não enxerga o valor do que recebe. Com o número de {h} em mãos, você sabe até onde pode ir sem trabalhar no prejuízo."],
+    [/medo|inseguran|vergonha|culpa|receio|coragem|travad|nao consigo cobrar|dificuldade (de|em) cobrar|dificil cobrar/, "Cobrar o valor certo começa por saber o número. Ele deixa de ser opinião e vira conta: {h} por hora é o piso para o seu negócio fechar o mês. A insegurança diminui quando o preço tem base."],
+    [/concorr|colegas|outros profissionais|mercado|vizinh/, "Olhar para o preço dos outros é um caminho arriscado, porque você não conhece os custos, a margem nem a agenda deles. O seu número parte do seu negócio e da sua realidade."],
+    [/agenda (vazia|fraca|parada)|poucos clientes|pouco cliente|sem cliente|vendo pouco|vender pouco|demanda|falta de cliente/, "Com poucos atendimentos, cada hora precisa carregar mais custo. É por isso que a taxa de ocupação pesa tanto no cálculo. Antes de baixar o preço, vale entender como trazer mais clientes na faixa certa de valor."],
+    [/agenda (cheia|lotada)|sem tempo|cansad|sobrecarreg|trabalho demais|trabalho muito|exaust|nao paro/, "Agenda cheia com faturamento que não acompanha costuma ser sinal de preço baixo para a carga que você carrega. Ajustar o valor da hora é mais seguro do que acrescentar horas ao seu dia."],
+    [/equipe|funcionari|contratar|colaborador|auxiliar|secretaria/, "Com equipe, o valor da hora precisa carregar também o custo de quem trabalha com você. Vale incluir salários e encargos em outros custos fixos para ter um número mais fiel."],
+    [/aument|reajust|subir (o )?(preco|valor)|novo preco|mudar (o )?preco/, "Reajustar com segurança pede método: avisar com antecedência, explicar o motivo e mostrar o que o cliente recebe. O número de {h} é a sua referência para planejar esse aumento."],
+    [/comec|iniciando|inicio|abrindo|recem|estou abrindo/, "Quem está começando costuma cobrar pouco para ganhar clientes e depois não consegue subir o valor. Conhecer o seu piso desde já evita esse ciclo."],
+    [/custo|gasto|despesa|aluguel|divida|financeir|conta/, "Custo alto pede atenção redobrada ao número. Revisar o que entra em custos fixos costuma abrir espaço sem precisar mexer no preço."]
+  ];
+  function cvBuild() {
+    var d = cvData, i = d.i, r = d.r, nome = first(cvLast.nome), h = money(r.hora), obs = (cvLast.obs || "").trim();
+    var parts = [["Aluguel / espaço", i.aluguel], ["Materiais e insumos", i.materiais], ["Equipamentos e manutenção", i.equip], ["Marketing", i.mkt], ["Outros custos fixos", i.outros], ["Pró-labore", i.prolabore]].sort(function (a, b) { return b[1] - a[1]; });
+    var topPct = Math.round(parts[0][1] / r.custo * 100);
+    var verdict = r.hora < 80
+      ? nome + ", com " + h + " por hora você cobre os custos e garante a margem mínima, mas esse número ainda está no piso do mercado. O próximo passo é trabalhar o posicionamento para que seus clientes entendam o valor do que você entrega e paguem por isso sem você precisar justificar."
+      : r.hora < 180
+      ? nome + ", " + h + " por hora sustenta o seu negócio e já começa a refletir a sua experiência. A partir daqui, o crescimento não está em trabalhar mais horas, e sim em estruturar a apresentação do serviço e o processo de venda para que o cliente chegue ao preço já convencido."
+      : nome + ", " + h + " por hora é o número de quem cobra pelo resultado que entrega, e não pelo tempo que trabalha. Para sustentar esse valor, a comunicação do serviço precisa ser consistente com o preço. Cliente que chega com objeção de preço ainda não viu valor suficiente.";
+    var themes = []; var no = norm(obs);
+    if (no) CV_THEMES.forEach(function (t) { if (themes.length < 2 && t[0].test(no)) themes.push(t[1].replace(/\{h\}/g, h)); });
+    var H = '';
+    H += '<p class="eyebrow cv-in" style="--i:0">Análise de ' + esc(nome) + '</p>';
+    H += '<h2 class="cv-in" style="--i:1">' + esc(nome) + ', este é o seu <em>valor mínimo</em> por hora</h2>';
+    H += '<div class="cv-big cv-in" style="--i:2"><b id="cv-num" data-to="' + r.hora + '">' + money(0) + '</b><span>por hora</span></div>';
+    H += '<p class="cv-verdict cv-in" style="--i:3">' + esc(verdict) + '</p>';
+    H += '<div class="cv-cards cv-in" style="--i:4">' +
+      '<article><div class="l">Custo total mensal</div><div class="v">' + money(r.custo) + '</div><p class="n">A base que sustenta o seu negócio e o seu pró-labore.</p></article>' +
+      '<article><div class="l">Horas atendidas por mês</div><div class="v">' + Math.round(r.horasMes) + ' h</div><p class="n">Já considerando a sua taxa de ocupação real.</p></article>' +
+      '<article><div class="l">Faturamento mínimo no mês</div><div class="v">' + money(r.fat) + '</div><p class="n">O que precisa entrar para fechar a conta com a margem que você quer.</p></article></div>';
+    if (i.cobra) {
+      var diff = Math.abs(r.hora - i.cobra), mes = diff * r.horasMes, below = i.cobra < r.hora;
+      var w = Math.min(100, Math.round(i.cobra / r.hora * 100)), w2 = Math.min(100, Math.round(r.hora / i.cobra * 100));
+      H += '<div class="cv-block cv-in" style="--i:5"><h3>' + (below ? "O que fica na mesa" : "Você já cobra acima do mínimo") + '</h3>';
+      H += '<p>' + (below
+        ? "Hoje você cobra " + money(i.cobra) + " por hora e o seu mínimo é " + h + ". Cada hora atendida custa " + money(diff) + " ao seu negócio, cerca de " + money(mes) + " por mês no ritmo de agenda que você informou."
+        : "Você cobra " + money(i.cobra) + " por hora contra um mínimo de " + h + ". Sobram " + money(diff) + " por hora, cerca de " + money(mes) + " por mês. O desafio agora é sustentar esse valor com posicionamento.") + '</p>';
+      H += '<div class="cv-gap"><div class="cv-bar alt"><div class="t"><span>Você cobra hoje</span><b>' + money(i.cobra) + '</b></div><div class="tr"><i data-w="' + (below ? w : 100) + '"></i></div></div>' +
+        '<div class="cv-bar"><div class="t"><span>Seu mínimo</span><b>' + h + '</b></div><div class="tr"><i data-w="' + (below ? 100 : w2) + '"></i></div></div></div></div>';
+    }
+    if (obs || themes.length) {
+      H += '<div class="cv-block cv-in" style="--i:6"><h3>Sobre o que você escreveu</h3>';
+      if (obs) H += '<p class="cv-said">' + esc(obs.length > 240 ? obs.slice(0, 237).trim() + "..." : obs) + '</p>';
+      H += '<div class="cv-ins">' + (themes.length ? themes.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join("") : '<p>Foi útil você ter contado o seu momento. Esse tipo de informação ajuda a olhar para o seu caso de perto, e a Cris pode aprofundar isso com você numa conversa.</p>') + '</div></div>';
+    }
+    H += '<div class="cv-block cv-in" style="--i:7"><h3>Onde está a sua alavanca</h3><p>Pequenos ajustes mudam o número. Estas são três simulações com os seus próprios dados.</p><div class="cv-lev">' +
+      '<article><div class="k">Agenda mais ocupada</div><p>Com 10 pontos a mais de ocupação (' + Math.round(i.ocup * 100) + '% para ' + Math.round(Math.min(1, i.ocup + 0.1) * 100) + '%), o seu mínimo cai para ' + money(r.hOcup) + ' por hora.</p></article>' +
+      '<article><div class="k">Custos 10% menores</div><p>' + (topPct >= 30 ? "O maior peso nos seus custos é " + parts[0][0].toLowerCase() + ", com " + topPct + "% do total. " : "") + 'Reduzindo 10% dos custos, o mínimo vai para ' + money(r.hCusto) + ' por hora.</p></article>' +
+      '<article><div class="k">Mais R$ 10 na hora</div><p>Cada R$ 10 a mais no valor da hora representam cerca de ' + money(10 * r.horasMes) + ' a mais por mês, sem trabalhar uma hora a mais.</p></article></div></div>';
+    H += '<div class="cv-cta cv-in" style="--i:8"><h3>' + esc(nome) + ', o número é o começo da conversa</h3><p>Saber quanto cobrar é um passo. Sustentar esse valor com posicionamento, oferta e atendimento é o que a Mentoria Singular trabalha, incluindo precificação, custo por hora e ponto de equilíbrio. Você pode falar direto com a Cris ou conhecer a mentoria.</p>' +
+      '<div class="btn-row"><a class="btn" id="cv-wa" target="_blank" rel="noopener">Falar com a Cris no WhatsApp</a><button class="btn btn-ghost" type="button" data-go="mentoria-singular">Conhecer a Mentoria Singular</button></div></div>';
+    H += '<button class="cv-redo" id="cv-redo" type="button">Refazer o cálculo</button>';
+    var box = document.getElementById("cv-result-in"); box.innerHTML = H;
+    var msg = "Oi, Cris! Eu sou " + nome + ", cheguei {onde} e fiz a Calculadora de Valor Hora. Deu que o meu valor mínimo por hora é " + h + (i.cobra ? ", e hoje eu cobro " + money(i.cobra) : "") + "." + (obs ? " Escrevi no cálculo: \"" + obs.slice(0, 160).trim() + (obs.length > 160 ? "..." : "") + "\"." : "") + " Quero conversar sobre isso.";
+    document.getElementById("cv-wa").href = waLink(msg.replace(/\u00a0/g, " "));
+    document.getElementById("cv-redo").addEventListener("click", function () { document.getElementById("cv-calc").scrollIntoView({ behavior: "smooth", block: "start" }); });
+  }
+  function cvReveal() {
+    var sec = document.getElementById("cv-result"); sec.hidden = false;
+    var num = document.getElementById("cv-num"), to = +num.getAttribute("data-to");
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) { num.textContent = money(to); } else {
+      var t0 = null, dur = 1800;
+      (function step(t) { if (t0 === null) t0 = t; var p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); num.textContent = money(to * e); if (p < 1) requestAnimationFrame(step); else num.textContent = money(to); })(performance.now());
+    }
+    setTimeout(function () { sec.querySelectorAll(".tr i").forEach(function (b) { b.style.width = b.getAttribute("data-w") + "%"; }); }, 500);
+  }
+  function cvScroll() {
+    var sec = document.getElementById("cv-result"); if (!sec || sec.hidden) return;
+    sec.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function finishCalc() {
+    foot.textContent = "";
+    var a = state.answers, i = cvData.i, r = cvData.r;
+    cvLast = { nome: a.nome, email: a.email, obs: a.obs || "" };
+    store.submitLead("calculadora", { nome: a.nome, email: a.email, obs: a.obs || "", valor_hora: r.hora, custo_mensal: Math.round(r.custo), horas_mes: Math.round(r.horasMes), faturamento_minimo: Math.round(r.fat), cobra_hoje: i.cobra || "", dias_semana: i.dias, horas_dia: i.horas, ocupacao: Math.round(i.ocup * 100) + "%", margem: Math.round(i.margem * 100) + "%", experiencia: i.expT, especializacao: i.especT, prolabore: i.prolabore, aluguel: i.aluguel, materiais: i.materiais, equipamentos: i.equip, marketing: i.mkt, outros_custos: i.outros });
+    typing(function () { showCalcDone(a.nome); }, 1000);
+  }
+  function showCalcDone(nomeCompleto) {
+    foot.textContent = "";
+    var nome = first(nomeCompleto);
+    bubble("bot", "Pronto, " + nome + "! O seu valor de hora está calculado.");
+    var c = el("div", "result-card t-off");
+    c.appendChild(el("span", "fmt", "Calculadora de Valor Hora"));
+    c.appendChild(el("h4", "", "Sua análise está pronta"));
+    c.appendChild(el("p", "", "Ela traz o seu número, o que ele significa para o seu negócio e onde estão as suas alavancas."));
+    var b = el("button", "btn", "Ver minha análise"); b.type = "button";
+    b.addEventListener("click", function () { closeChat(); });
+    c.appendChild(b);
+    body.appendChild(c);
+    var note = el("p", "chat-note", "Ao enviar, você concorda com a ");
+    var l = el("a", "", "Política de Privacidade"); l.href = "#politica-de-privacidade"; l.setAttribute("data-go", "politica-de-privacidade");
+    note.appendChild(l); note.appendChild(document.createTextNode("."));
+    body.appendChild(note);
+    state.started = true;
+    cvBuild(); cvShow = true;
+    cvReveal();
+    toBottom();
+  }
+  document.addEventListener("click", function (e) { var g = e.target.closest("#cv-go"); if (g) cvStart(g); });
+
   function openChat(flowName, from) {
     opener = from || null;
     if (flowName.indexOf("espera-") === 0) waitSvc = flowName.slice(7);
@@ -1571,6 +1855,8 @@ body.v-svc .m-progress { display: block; }
       } else if (flowName === "diagnostico") {
         try { saved = JSON.parse(localStorage.getItem(DIAG_KEY) || "null"); } catch (e) {}
         if (saved && saved.nome) { showDiagnosticoDone(saved.nome); return; }
+      } else if (flowName === "calculadora") {
+        saved = null;
       } else {
         try { saved = JSON.parse(localStorage.getItem(MATERIAL_KEY) || "null"); } catch (e) {}
         if (saved && saved.nome) { showMaterialDone(saved.nome); return; }
@@ -1588,6 +1874,7 @@ body.v-svc .m-progress { display: block; }
     chat.hidden = true;
     document.body.style.overflow = "";
     if (opener && opener.focus) opener.focus();
+    if (cvShow) { cvShow = false; cvScroll(); }
   }
   document.addEventListener("click", function (e) {
     var b = e.target.closest("[data-chat-open]");
@@ -1604,12 +1891,12 @@ body.v-svc .m-progress { display: block; }
   "use strict";
   var root = document.getElementById("adm"); if (!root || !window.CT) return;
   var SUPA = CT.supa, remoteOn = !!(SUPA.url && SUPA.key);
-  var PAGES = { home: "Página inicial", "mentoria-singular": "Mentoria Singular", "analise-de-perfil": "Análise de Perfil", "treinamento-comercial": "Treinamento Comercial", "treinamento-de-lideres": "Treinamento de Líderes", "treinamento-de-comunicacao": "Comunicação Assertiva", palestras: "Palestras", "termos-de-uso": "Termos de uso", "politica-de-privacidade": "Política de privacidade" };
+  var PAGES = { home: "Página inicial", "mentoria-singular": "Mentoria Singular", "analise-de-perfil": "Análise de Perfil", "treinamento-comercial": "Treinamento Comercial", "treinamento-de-lideres": "Treinamento de Líderes", "treinamento-de-comunicacao": "Comunicação Assertiva", palestras: "Palestras", "termos-de-uso": "Termos de uso", "politica-de-privacidade": "Política de privacidade", "calculadora-de-valor-hora": "Calculadora de Valor Hora" };
   var SERV = ["mentoria-singular", "analise-de-perfil", "treinamento-comercial", "treinamento-de-lideres", "treinamento-de-comunicacao", "palestras"];
-  var KINDS = { chat: "Conversa guiada", materiais: "Materiais", diagnostico: "Diagnóstico", espera: "Lista de espera", parcial: "Incompleto" };
+  var KINDS = { chat: "Conversa guiada", materiais: "Materiais", calculadora: "Calculadora de Valor", diagnostico: "Diagnóstico", espera: "Lista de espera", parcial: "Incompleto" };
   var STATUS = ["Novo", "Contatada", "Sessão agendada", "Em negociação", "Fechou", "Sem interesse"];
-  var FLOWN = { espera: "Lista de espera", guia: "Conversa guiada", material: "Materiais gratuitos", diagnostico: "Diagnóstico" };
-  var TEXTF = { faz: "O que faz", area: "Área", modelo: "Negócio", valor: "Valor do serviço", desafio: "Desafio", objetivo: "Objetivo", mensagem: "Mensagem" };
+  var FLOWN = { espera: "Lista de espera", guia: "Conversa guiada", material: "Materiais gratuitos", calculadora: "Calculadora de Valor", diagnostico: "Diagnóstico" };
+  var TEXTF = { faz: "O que faz", area: "Área", modelo: "Negócio", valor: "Valor do serviço", desafio: "Desafio", objetivo: "Objetivo", mensagem: "Mensagem", obs: "Observação (calculadora)" };
   var CHOICE = { area: "Área (conversa)", equipe: "Equipe", momento: "Momento do negócio", problema: "Principal desafio", procura: "O que procura", situacao: "Situação (diagnóstico)" };
   var STOP = ("a o as os um uma uns umas de do da dos das em no na nos nas por para com sem sob sobre entre até ate e ou mas que se como mais menos muito muita muitos muitas meu minha meus minhas seu sua seus suas eu você voce vc nós nos ele ela eles elas isso isto esse essa esses essas este esta estes estas aquele aquela ser estar ter tem tenho tinha temos são sao era foi fui está esta estou estão estavam fazer faço faz fazendo ainda já ja também tambem só so não nao sim quando onde porque pois então entao tudo todo toda todos todas cada outro outra outros outras ao aos à às pelo pela pelos pelas num numa há ha vai vou quero queria preciso gostaria pra pro mim me te lhe nos hoje agora bem mal coisa coisas muito vez vezes ter sendo depois antes assim aqui lá la ver dia dias ano anos mes meses").split(/\s+/);
   var STOPSET = {}; STOP.forEach(function (w) { STOPSET[norm(w)] = 1; });
@@ -1665,7 +1952,7 @@ body.v-svc .m-progress { display: block; }
   }
 
   /* ---------- Formulários pela metade ---------- */
-  var FLK = { guia: "chat", material: "materiais", diagnostico: "diagnostico", espera: "espera" };
+  var FLK = { guia: "chat", material: "materiais", calculadora: "calculadora", diagnostico: "diagnostico", espera: "espera" };
   function addPartials(d) {
     var by = {}, sidSrc = {};
     d.events.forEach(function (e) {
@@ -1778,6 +2065,7 @@ body.v-svc .m-progress { display: block; }
     if (k.indexOf("diagnostico") >= 0) s += 40;
     if (k.indexOf("espera") >= 0) s += 25;
     if (k.indexOf("materiais") >= 0) s += 15;
+    if (k.indexOf("calculadora") >= 0) s += 20;
     if (k.indexOf("chat") >= 0) s += 15;
     s += Math.max(0, p.leads.filter(function (l) { return l.kind !== "parcial"; }).length - 1) * 8;
     if (p.wa) s += 15;
@@ -2038,7 +2326,7 @@ body.v-svc .m-progress { display: block; }
       (p.susp ? '<p class="a-susp">Suspeito: ' + esc(p.susp) + '</p>' : "") + '<h4>Andamento</h4>' + sel("d-st", m.status || "Novo", STATUS.map(function (s) { return [s, s]; })) + '<textarea id="d-note" placeholder="Anotações da Cris" aria-label="Anotações">' + esc(m.note || "") + '</textarea><button class="adm-btn p" id="d-save" type="button">Salvar</button> <span id="d-ok" style="font-size:12px;color:var(--muted)"></span><h4>Excluir</h4><p style="font-size:13px;color:var(--muted);margin:0 0 8px">Apaga esta pessoa, as respostas e o histórico de navegação dela. Não dá para desfazer.</p><button class="adm-btn d" id="d-del" type="button">Excluir esta pessoa</button>';
     p.leads.forEach(function (l) {
       var a = l.payload || {}, keys = Object.keys(a).filter(function (k) { return a[k] !== "" && a[k] != null && ["nome", "email", "whatsapp"].indexOf(k) < 0; });
-      h += '<h4>' + esc(KINDS[l.kind] || l.kind) + ' · ' + dt(l.ts) + '</h4><dl class="a-qa">' + keys.map(function (k) { return '<dt>' + esc(TEXTF[k] || CHOICE[k] || ({ _flow: "Formulário", parou: "Parou em" })[k] || k) + '</dt><dd>' + esc(k === "_flow" ? (FLOWN[a[k]] || a[k]) : Array.isArray(a[k]) ? a[k].join(", ") : a[k]) + '</dd>'; }).join("") + '</dl>';
+      h += '<h4>' + esc(KINDS[l.kind] || l.kind) + ' · ' + dt(l.ts) + '</h4><dl class="a-qa">' + keys.map(function (k) { return '<dt>' + esc(TEXTF[k] || CHOICE[k] || ({ _flow: "Formulário", parou: "Parou em", valor_hora: "Valor de hora calculado", custo_mensal: "Custo mensal", horas_mes: "Horas por mês", faturamento_minimo: "Faturamento mínimo", cobra_hoje: "Cobra hoje por hora", dias_semana: "Dias por semana", horas_dia: "Horas por dia", ocupacao: "Ocupação", margem: "Margem", experiencia: "Experiência", especializacao: "Especialização", prolabore: "Pró-labore", aluguel: "Aluguel", materiais: "Materiais e insumos", equipamentos: "Equipamentos", marketing: "Marketing", outros_custos: "Outros custos" })[k] || k) + '</dt><dd>' + esc(k === "_flow" ? (FLOWN[a[k]] || a[k]) : Array.isArray(a[k]) ? a[k].join(", ") : a[k]) + '</dd>'; }).join("") + '</dl>';
     });
     var ev = p.events.filter(function (e) { return e.type !== "scroll"; }).slice(-120);
     h += '<h4>Linha do tempo (' + p.sessions + ' visitas, origem ' + esc(p.src) + ')</h4><ul class="a-tl">' + (ev.length ? ev.map(function (e) { return '<li class="' + (["form_submit", "wa_click", "cta_click"].indexOf(e.type) >= 0 ? "k" : "") + '"><time>' + dt(e.ts) + '</time>' + esc(evText(e)) + '</li>'; }).join("") : '<li>Sem eventos de navegação (cadastro feito antes do rastreamento).</li>') + '</ul></aside>';
@@ -2108,7 +2396,7 @@ body.v-svc .m-progress { display: block; }
     root.querySelectorAll(".a-bar[data-k]").forEach(function (b) { b.onclick = function () { S.word = b.getAttribute("data-k"); draw(); }; });
     on("ign", "change", function (e) { CT.setIgnore(e.target.checked); });
     on("exp", "click", function () { save("dados-site-cris.json", JSON.stringify(S.data, null, 2), "application/json"); });
-    on("clr", "click", function () { var b = document.getElementById("clr"); if (b.dataset.s) { ["cris_ev_v1", "cris_leads_all", "cris_leads_chat", "cris_leads_materiais", "cris_leads_diagnostico", "cris_leads_espera", "cris_adm_meta"].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); META = {}; refresh(); } else { b.dataset.s = 1; b.textContent = "Tem certeza? Clique de novo para apagar"; } });
+    on("clr", "click", function () { var b = document.getElementById("clr"); if (b.dataset.s) { ["cris_ev_v1", "cris_leads_all", "cris_leads_chat", "cris_leads_materiais", "cris_leads_calculadora", "cris_leads_diagnostico", "cris_leads_espera", "cris_adm_meta"].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); META = {}; refresh(); } else { b.dataset.s = 1; b.textContent = "Tem certeza? Clique de novo para apagar"; } });
     function logout() { S.token = ""; try { sessionStorage.removeItem("cris_adm_tok"); } catch (e) {} S.data = null; draw(); }
     on("out", "click", logout); on("out2", "click", logout);
   }
