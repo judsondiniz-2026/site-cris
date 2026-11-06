@@ -1932,7 +1932,7 @@ body.v-svc .m-progress { display: block; }
     if (!S.data) { root.innerHTML = '<p class="adm-empty">' + esc(S.err || "Carregando...") + '</p>'; return; }
     var pe = S.pe = buildPeople(S.data), tabs = [["geral", "Visão geral"], ["servicos", "Serviços e formulários"], ["pessoas", "Pessoas"], ["palavras", "Palavras e respostas"], ["ajustes", "Ajustes"]];
     var body = S.tab === "geral" ? vGeral(S.data, pe) : S.tab === "servicos" ? vServicos(S.data, pe) : S.tab === "pessoas" ? vPessoas(S.data, pe) : S.tab === "palavras" ? vPalavras(S.data, pe) : vAjustes();
-    root.innerHTML = '<div class="adm-top"><div><h1>Painel</h1><p class="sub">Quem visita, o que clica e quem vira contato.</p></div><div class="adm-bar">' + sel("f-per", S.period, [["1", "Hoje"], ["7", "7 dias"], ["30", "30 dias"], ["90", "90 dias"], ["all", "Tudo"]]) + '<button class="adm-btn" id="rf" type="button">Atualizar</button></div></div>' +
+    root.innerHTML = '<div class="adm-top"><div><h1>Painel</h1><p class="sub">Quem visita, o que clica e quem vira contato.</p></div><div class="adm-bar">' + sel("f-per", S.period, [["1", "Hoje"], ["7", "7 dias"], ["30", "30 dias"], ["90", "90 dias"], ["all", "Tudo"]]) + '<button class="adm-btn" id="rf" type="button">Atualizar</button>' + (remoteOn ? '<button class="adm-btn" id="out2" type="button">Sair</button>' : '') + '</div></div>' +
       (remoteOn ? "" : '<div class="adm-mode"><b>Modo local.</b> Você está vendo só os dados deste navegador. Depois de conectar o banco de dados, aqui aparecem todos os visitantes e o acesso passa a pedir login.</div>') +
       '<div class="adm-tabs" role="tablist">' + tabs.map(function (t) { return '<button role="tab" type="button" data-t="' + t[0] + '" aria-selected="' + (S.tab === t[0]) + '">' + t[1] + '</button>'; }).join("") + '</div>' + body;
     bind();
@@ -1962,7 +1962,8 @@ body.v-svc .m-progress { display: block; }
     on("ign", "change", function (e) { CT.setIgnore(e.target.checked); });
     on("exp", "click", function () { save("dados-site-cris.json", JSON.stringify(S.data, null, 2), "application/json"); });
     on("clr", "click", function () { var b = document.getElementById("clr"); if (b.dataset.s) { ["cris_ev_v1", "cris_leads_all", "cris_leads_chat", "cris_leads_materiais", "cris_leads_diagnostico", "cris_leads_espera", "cris_adm_meta"].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); META = {}; refresh(); } else { b.dataset.s = 1; b.textContent = "Tem certeza? Clique de novo para apagar"; } });
-    on("out", "click", function () { S.token = ""; try { sessionStorage.removeItem("cris_adm_tok"); } catch (e) {} S.data = null; draw(); });
+    function logout() { S.token = ""; try { sessionStorage.removeItem("cris_adm_tok"); } catch (e) {} S.data = null; draw(); }
+    on("out", "click", logout); on("out2", "click", logout);
   }
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") { var b = document.getElementById("adm-drawer"); if (b) b.remove(); } });
   window.addEventListener("cris:admin", refresh);
